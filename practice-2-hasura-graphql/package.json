@@ -1,0 +1,12 @@
+{
+  "name": "@boltline/practice-hasura-graphql",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node infra/dev-server.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "workspace:*"
+  }
+}

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-config
+  namespace: boltline-playground
+data:
+  topics.json: |
+    {
+      "topics": [
+        {
+          "name": "shipment-events",
+          "partitions": 3,
+          "replication_factor": 1
+        }
+      ]
+    }

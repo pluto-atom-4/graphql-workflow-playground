@@ -1,0 +1,36 @@
+version: 2
+
+enable:
+  # Check for outdated npm/yarn dependencies
+  - dependency-updates
+
+# Managed by Dependabot
+updates:
+  # Update pnpm workspace packages
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "03:00"
+    open-pull-requests-limit: 5
+    allow:
+      - dependency-type: "production"
+    ignore:
+      # Keep these pinned for stability
+      - dependency-name: "pnpm"
+      - dependency-name: "@temporalio/client"
+      - dependency-name: "@temporalio/worker"
+      - dependency-name: "node"
+
+  # Update GitHub Actions
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "04:00"
+    open-pull-requests-limit: 3
+
+# Vulnerability alerts
+vulnerability-alerts: true

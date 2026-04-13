@@ -1,0 +1,30 @@
+query GetInventory {
+  inventory(order_by: { part_id: asc }) {
+    id
+    partId: part_id
+    quantity
+    location
+    createdAt: created_at
+    updatedAt: updated_at
+    part {
+      id
+      name
+      sku
+    }
+  }
+}
+
+query GetInventoryByPart($partId: uuid!) {
+  inventory(where: { part_id: { _eq: $partId } }) {
+    id
+    partId: part_id
+    quantity
+    location
+    createdAt: created_at
+    part {
+      id
+      name
+      sku
+    }
+  }
+}

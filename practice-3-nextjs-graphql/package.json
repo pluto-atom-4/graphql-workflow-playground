@@ -1,0 +1,39 @@
+{
+  "name": "@boltline/practice-nextjs-graphql",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "start": "next start",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "test": "jest",
+    "e2e": "playwright test"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.9.0",
+    "graphql": "^16.8.1",
+    "next": "^14.1.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.5",
+    "@testing-library/react": "^14.1.2",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.0",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "autoprefixer": "^10.4.17",
+    "eslint": "workspace:*",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "postcss": "^8.4.33",
+    "prettier": "workspace:*",
+    "tailwindcss": "^3.4.1",
+    "ts-jest": "^29.1.5",
+    "typescript": "workspace:*"
+  }
+}

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hasura
+  namespace: boltline-playground
+  labels:
+    app: hasura
+    practice: practice-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hasura
+  template:
+    metadata:
+      labels:
+        app: hasura
+        practice: practice-2
+    spec:
+      containers:
+        - name: hasura
+          image: hasura/graphql-engine:v2.40.0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: HASURA_GRAPHQL_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: hasura-secret
+                  key: database-url
+            - name: HASURA_GRAPHQL_ADMIN_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: hasura-secret
+                  key: admin-secret
+            - name: HASURA_GRAPHQL_DEV_MODE
+              value: "true"
+            - name: HASURA_GRAPHQL_ENABLE_CONSOLE
+              value: "true"
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

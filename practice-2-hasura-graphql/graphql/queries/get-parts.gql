@@ -1,0 +1,9 @@
+query GetParts {
+  parts(order_by: { name: asc }) {
+    id
+    name
+    sku
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextjs-app
+  namespace: boltline-playground
+  labels:
+    app: nextjs-app
+    practice: practice-3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nextjs-app
+  template:
+    metadata:
+      labels:
+        app: nextjs-app
+        practice: practice-3
+    spec:
+      containers:
+        - name: app
+          image: boltline/practice-nextjs-graphql:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NEXT_PUBLIC_HASURA_GRAPHQL_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: nextjs-config
+                  key: hasura-http-url
+            - name: NEXT_PUBLIC_HASURA_GRAPHQL_WSS_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: nextjs-config
+                  key: hasura-ws-url
+            - name: NODE_ENV
+              value: "production"
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextjs-service
+  namespace: boltline-playground
+spec:
+  selector:
+    app: nextjs-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: LoadBalancer

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: action-webhook
+  namespace: boltline-playground
+  labels:
+    app: action-webhook
+    practice: practice-2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: action-webhook
+  template:
+    metadata:
+      labels:
+        app: action-webhook
+        practice: practice-2
+    spec:
+      containers:
+        - name: webhook
+          image: boltline/practice-hasura-graphql-webhook:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3001
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: action-webhook-secret
+                  key: database-url
+            - name: WEBHOOK_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: action-webhook-secret
+                  key: webhook-secret
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 3001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "250m"

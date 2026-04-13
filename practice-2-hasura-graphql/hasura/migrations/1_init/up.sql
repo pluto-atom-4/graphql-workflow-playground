@@ -1,0 +1,3 @@
+-- Initial schema migration (already created by schema.sql)
+-- This migration file is a placeholder for Hasura CLI management
+-- The actual schema is initialized via postgres/schema.sql

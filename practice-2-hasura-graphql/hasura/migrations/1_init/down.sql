@@ -1,0 +1,2 @@
+-- Rollback migration (placeholder)
+-- In practice, this would drop the tables if you need to start fresh

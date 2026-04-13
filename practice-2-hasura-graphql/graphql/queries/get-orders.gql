@@ -1,0 +1,31 @@
+query GetOrders {
+  orders(order_by: { created_at: desc }) {
+    id
+    partId: part_id
+    quantity
+    status
+    createdAt: created_at
+    updatedAt: updated_at
+    part {
+      id
+      name
+      sku
+    }
+  }
+}
+
+query GetOrderById($id: uuid!) {
+  orders_by_pk(id: $id) {
+    id
+    partId: part_id
+    quantity
+    status
+    createdAt: created_at
+    updatedAt: updated_at
+    part {
+      id
+      name
+      sku
+    }
+  }
+}

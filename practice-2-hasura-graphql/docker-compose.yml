@@ -1,0 +1,20 @@
+version: "3.9"
+
+# Includes shared infra (Postgres, Hasura, Kafka, Temporal)
+include:
+  - path: ../infra/docker/docker-compose.shared.yml
+
+# Add Kafka UI for local debugging
+services:
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: boltline-kafka-ui
+    depends_on:
+      - kafka
+    ports:
+      - "8090:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+    networks:
+      - boltline_net

@@ -1,0 +1,3 @@
+{
+  "extends": "@boltline/tsconfig/node.json"
+}

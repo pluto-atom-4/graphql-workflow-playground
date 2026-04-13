@@ -1,0 +1,9 @@
+{
+  "extends": "@boltline/tsconfig/node.json",
+  "include": ["src/**/*.ts"],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "module": "CommonJS"
+  }
+}

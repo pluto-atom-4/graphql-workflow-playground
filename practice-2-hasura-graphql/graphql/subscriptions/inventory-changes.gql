@@ -1,0 +1,26 @@
+subscription OnInventoryChange {
+  inventory(order_by: { updated_at: desc }, limit: 10) {
+    id
+    partId: part_id
+    quantity
+    location
+    createdAt: created_at
+    updatedAt: updated_at
+    part {
+      id
+      name
+      sku
+    }
+  }
+}
+
+subscription OnOrderStatusChange {
+  orders(order_by: { updated_at: desc }, limit: 10) {
+    id
+    partId: part_id
+    quantity
+    status
+    createdAt: created_at
+    updatedAt: updated_at
+  }
+}

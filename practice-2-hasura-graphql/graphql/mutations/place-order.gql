@@ -1,0 +1,7 @@
+mutation PlaceOrder($partId: uuid!, $quantity: Int!) {
+  placeOrder(input: { part_id: $partId, quantity: $quantity }) {
+    orderId
+    status
+    message
+  }
+}

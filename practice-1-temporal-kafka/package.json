@@ -1,0 +1,33 @@
+{
+  "name": "@boltline/practice-temporal-kafka",
+  "version": "1.0.0",
+  "private": true,
+  "main": "dist/starter.js",
+  "scripts": {
+    "build": "tsc --project tsconfig.json",
+    "type-check": "tsc --noEmit",
+    "dev": "tsx watch src/temporal/worker.ts",
+    "start:worker": "node dist/temporal/worker.js",
+    "start:starter": "tsx src/starter.ts",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@boltline/shared-types": "workspace:*",
+    "@temporalio/activity": "^1.10.0",
+    "@temporalio/client": "^1.10.0",
+    "@temporalio/worker": "^1.10.0",
+    "kafkajs": "^2.2.4",
+    "nanoid": "^4.0.2"
+  },
+  "devDependencies": {
+    "@temporalio/testing": "^1.10.0",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.11.0",
+    "jest": "workspace:*",
+    "ts-jest": "workspace:*",
+    "tsx": "^4.7.0",
+    "typescript": "workspace:*"
+  }
+}

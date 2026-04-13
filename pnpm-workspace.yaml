@@ -1,0 +1,6 @@
+packages:
+  - "packages/*"
+  - "practice-1-temporal-kafka"
+  - "practice-2-hasura-graphql"
+  - "practice-3-nextjs-graphql"
+  - "practice-2-hasura-graphql/action-webhook"

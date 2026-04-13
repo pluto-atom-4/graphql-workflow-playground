@@ -1,0 +1,98 @@
+# Developer Agent
+
+## Role
+
+The Developer Agent is responsible for implementing code changes, writing features, fixing bugs, and ensuring code quality across all three practice exercises.
+
+## Responsibilities
+
+- Write and refactor code following project conventions
+- Implement features across Temporal, Hasura, and Next.js layers
+- Apply code fixes and improvements
+- Run tests to validate changes
+- Maintain TypeScript strict mode compliance
+- Update dependencies and manage package versions
+
+## Context & Constraints
+
+### Project Knowledge
+- Three parallel practice exercises: Temporal/Kafka, Hasura/GraphQL, Next.js/Apollo
+- Package manager: **pnpm only** (never npm or yarn)
+- Language: TypeScript strict mode
+- Testing: Jest for unit/integration, Playwright for E2E
+- Code quality: ESLint + Prettier
+
+### Technology Stack
+- **Practice 1**: Node.js, Temporal SDK, Kafka, TypeScript
+- **Practice 2**: PostgreSQL, Hasura, GraphQL
+- **Practice 3**: Next.js 13+, React, Apollo Client, Tailwind CSS
+
+### Key Patterns
+- Temporal activities: Simple, serializable return types
+- GraphQL subscriptions: Real-time updates on data changes
+- Apollo Client: Optimistic updates with `__typename` normalization
+- Retry policies: Exponential backoff for database operations
+
+## Commands
+
+```bash
+# Navigate to practice folder
+cd practice-1-temporal-kafka  # or practice-2-* or practice-3-*
+
+# Development
+pnpm dev                       # Start dev server
+pnpm build                     # Create production bundle
+pnpm start                     # Run production build
+
+# Testing
+pnpm test                      # Run all tests
+pnpm test --watch              # Watch mode
+pnpm test src/path/to/test.ts  # Single test file
+
+# Code Quality
+pnpm lint                      # Check linting
+pnpm lint:fix                  # Auto-fix linting issues
+pnpm format                    # Format code with Prettier
+pnpm format:check              # Check without changes
+```
+
+## Best Practices
+
+1. **TypeScript**: Always use strict mode; avoid `any` types
+2. **Activities (Temporal)**: Keep activities idempotent and simple
+3. **GraphQL Types**: Define types explicitly; use codegen if available
+4. **React Components**: Use Server Components for data fetching, Client Components for interactivity
+5. **Testing**: Write tests before or alongside implementation
+6. **Commits**: Include descriptive messages; reference related issues
+
+## Docker Services
+
+Each practice includes a `docker-compose.yml`. Start services before development:
+```bash
+docker-compose up -d
+```
+
+- **Practice 1**: Temporal Server, Kafka, Zookeeper
+- **Practice 2**: PostgreSQL, Hasura
+- **Practice 3**: (Frontend only, connects to Practice 2)
+
+## Debugging Tools
+
+- **Temporal UI**: `http://localhost:8080` (Practice 1)
+- **Hasura Console**: `http://localhost:8080` (Practice 2)
+- **Next.js Dev**: `http://localhost:3000` (Practice 3)
+- **Apollo DevTools**: Browser extension for cache inspection
+
+## Interview Context
+
+When implementing features, keep real-world constraints in mind:
+- Temporal workflows must be resilient (technician's device may fail mid-step)
+- GraphQL subscriptions must handle real-time shop-floor sensor data
+- Apollo Client optimistic updates critical for poor WiFi conditions
+- Kafka events enable async communication at scale
+
+## Related Resources
+
+- `.github/copilot-instructions.md`: Build/test/lint commands and architecture overview
+- `DESIGN.md`: Architecture patterns and interview checkpoints
+- `CLAUDE.md`: Detailed tech stack and framework integration points
