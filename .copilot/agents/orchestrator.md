@@ -53,6 +53,7 @@ External Systems / Event Consumers
 ## Coordination Commands
 
 ### Task Planning
+
 ```bash
 # Create a feature task breakdown
 # Document dependencies in task description
@@ -65,6 +66,7 @@ External Systems / Event Consumers
 ```
 
 ### Checking Integration Points
+
 ```bash
 # Verify Practice 2 GraphQL schema is up-to-date
 # Check Hasura metadata for new relationships
@@ -73,6 +75,7 @@ External Systems / Event Consumers
 ```
 
 ### Managing Dependencies
+
 - **PostgreSQL Schema Changes**: Update Hasura metadata → regenerate GraphQL types
 - **New GraphQL Types**: Regenerate Apollo Client types → update Next.js components
 - **Temporal Workflow Changes**: Verify activities are idempotent → test recovery scenarios
@@ -80,6 +83,7 @@ External Systems / Event Consumers
 ## Orchestration Patterns
 
 ### Sequential Workflow (One Practice at a Time)
+
 ```
 Practice 2: Design schema + migrations
   ↓ (schema complete)
@@ -89,6 +93,7 @@ Practice 3: Build UI components + mutations
 ```
 
 ### Parallel Development (Independent Features)
+
 ```
 Practice 1: Add new activity        (no Practice 2 dependency)
 Practice 2: Add new table           (no Practice 1/3 dependency)
@@ -97,7 +102,9 @@ Practice 3: Refactor components     (no Practice 1/2 dependency)
 ```
 
 ### Blocked Tasks
+
 When a task is blocked:
+
 1. Document the blocker clearly
 2. Identify what must complete first
 3. Escalate to unblock or request help
@@ -124,12 +131,14 @@ When orchestrating work, reference these selling points in task breakdowns.
 ## Decision-Making
 
 ### Technology Choices
+
 - **Temporal**: For reliable workflow execution (activities can fail and recover)
 - **Kafka**: For high-volume async events (sensor data from shop floor)
 - **Hasura**: For rapid GraphQL endpoint generation (weeks saved vs. hand-coded)
 - **Apollo Client**: For optimistic updates (technicians get instant feedback)
 
 ### Task Sequencing
+
 - Always verify schema before writing queries
 - Always test workflows before consuming events
 - Always test mutations before building UI
@@ -137,12 +146,14 @@ When orchestrating work, reference these selling points in task breakdowns.
 ## Blockers & Escalation
 
 **Common Blockers**:
+
 1. Docker services not running → Start with `docker-compose up -d`
 2. Hasura metadata out of sync → Reload metadata in console
 3. GraphQL types mismatch → Regenerate from schema
 4. Temporal worker crashes → Check logs and restart
 
 **When to Escalate**:
+
 - Infrastructure/network issues affecting multiple practices
 - Dependency conflicts in package.json
 - Breaking schema changes affecting multiple consumers

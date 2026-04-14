@@ -65,6 +65,7 @@ The Reviewer Agent performs thorough code reviews, ensures quality standards are
 ### Practice 1: Temporal & Kafka
 
 **Activities Review**:
+
 ```typescript
 // ✅ GOOD: Idempotent, deterministic, simple return
 async function validateOrder(order: Order): Promise<ValidationResult> {
@@ -80,12 +81,14 @@ async function validateOrder(order: Order): Promise<ValidationResult> {
 ```
 
 **Workflow Review**:
+
 - Activities are called in correct order
 - Retries have exponential backoff
 - Kafka events published at right lifecycle point
 - Error handling doesn't crash workflow
 
 **Kafka Events**:
+
 - Events have clear schema (topic, message format)
 - Events are published idempotently (same input → same event)
 - Consumer expectations documented
@@ -93,6 +96,7 @@ async function validateOrder(order: Order): Promise<ValidationResult> {
 ### Practice 2: Hasura & GraphQL
 
 **Schema Review**:
+
 - Primary keys defined on all tables
 - Foreign keys properly constrained
 - Column types appropriate (not all TEXT)
@@ -100,6 +104,7 @@ async function validateOrder(order: Order): Promise<ValidationResult> {
 - Unique constraints where needed
 
 **GraphQL Types Review**:
+
 ```typescript
 // ✅ GOOD: Explicit, required fields marked
 type WorkPlan {
@@ -119,6 +124,7 @@ type WorkPlan {
 ```
 
 **Custom Actions**:
+
 - Webhook URL is correct (local/remote)
 - Payload schema matches expectations
 - Error handling documented
@@ -127,31 +133,34 @@ type WorkPlan {
 ### Practice 3: Next.js & Apollo
 
 **Server Components**:
+
 - Data fetching done on server, not client
 - No client-side secrets exposed
 - GraphQL queries are correct
 - Error states handled gracefully
 
 **Client Components**:
+
 ```typescript
 // ✅ GOOD: Clear optimistic response, __typename included
 const [completeStep] = useMutation(COMPLETE_STEP, {
   optimisticResponse: {
     completeStep: {
-      __typename: 'Step',
+      __typename: "Step",
       id: stepId,
-      status: 'COMPLETED'
-    }
-  }
+      status: "COMPLETED",
+    },
+  },
 });
 
 // ❌ BAD: Missing __typename, incomplete response
 const [completeStep] = useMutation(COMPLETE_STEP, {
-  optimisticResponse: { id: stepId }
+  optimisticResponse: { id: stepId },
 });
 ```
 
 **Subscriptions**:
+
 - Subscription properly typed
 - Cache update logic correct
 - Unsubscribe on component unmount
@@ -160,6 +169,7 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 ## Red Flags
 
 🚩 **Immediate Concerns**:
+
 - Bare `any` types in TypeScript
 - No error handling for async operations
 - Mutable activity returns (Temporal)
@@ -170,6 +180,7 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 - Breaking changes undocumented
 
 🟡 **Minor Issues**:
+
 - Inconsistent naming
 - Verbose code that could be simplified
 - Missing edge case tests
@@ -197,7 +208,7 @@ When reviewing, use this format:
 
 - [ ] Missing test for error case
 - [ ] Activity has mutable return
-- [ ] GraphQL subscription missing __typename
+- [ ] GraphQL subscription missing \_\_typename
 
 ## Suggestions
 
@@ -209,18 +220,21 @@ When reviewing, use this format:
 ## Common Issues by Practice
 
 ### Practice 1 Issues
+
 - Activities with side effects or non-determinism
 - Missing retry policies
 - Kafka events published too frequently
 - No workflow error recovery
 
 ### Practice 2 Issues
+
 - Schema migrations not reversible
 - GraphQL types missing non-null markers
 - Foreign key constraints too lenient
 - Subscriptions not properly typed
 
 ### Practice 3 Issues
+
 - Data fetching in Client Components (should be Server)
 - Apollo cache not properly updated
 - Optimistic responses incomplete

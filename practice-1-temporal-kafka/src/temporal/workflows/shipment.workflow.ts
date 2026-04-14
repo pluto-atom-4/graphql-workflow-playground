@@ -1,7 +1,4 @@
-import {
-  proxyActivities,
-  ApplicationFailure,
-} from "@temporalio/workflow";
+import { proxyActivities, ApplicationFailure } from "@temporalio/workflow";
 import type { ShipmentOrder } from "@boltline/shared-types";
 
 const activities = proxyActivities<typeof import("../activities/validate-order.activity")>({
@@ -20,9 +17,7 @@ const activitiesReserve = proxyActivities<
   },
 });
 
-const activitiesKafka = proxyActivities<
-  typeof import("../activities/emit-kafka-event.activity")
->({
+const activitiesKafka = proxyActivities<typeof import("../activities/emit-kafka-event.activity")>({
   startToCloseTimeout: "1 minute",
 });
 

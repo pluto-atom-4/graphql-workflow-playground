@@ -35,8 +35,7 @@ export default function WorkPlanDetailPage({ params }: { params: { id: string } 
             <h3 className="text-lg font-semibold mb-2">💡 How This Works</h3>
             <ul className="text-gray-700 space-y-2 ml-4 list-disc">
               <li>
-                <strong>Server Component:</strong> Initial page render fetches work plan from
-                Hasura
+                <strong>Server Component:</strong> Initial page render fetches work plan from Hasura
               </li>
               <li>
                 <strong>Client Component:</strong> Step cards are interactive with optimistic

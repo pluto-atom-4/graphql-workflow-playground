@@ -13,7 +13,7 @@ See `about-me.md` for interview context and `DESIGN.md` for architecture pattern
 Three parallel practice exercises, each with its own Docker setup:
 
 1. **practice-1-temporal-kafka/** — Workflow orchestration and event streaming
-2. **practice-2-hasura-graphql/** — GraphQL data layer with real-time subscriptions  
+2. **practice-2-hasura-graphql/** — GraphQL data layer with real-time subscriptions
 3. **practice-3-nextjs-graphql/** — Full-stack React/Next.js frontend with Apollo Client
 
 Each exercise is **self-contained** and can be developed/tested independently. See `DESIGN.md` for the full directory structure.
@@ -67,16 +67,19 @@ pnpm start           # Run production build
 **Technologies**: Node.js, Temporal SDK, Kafka, TypeScript
 
 **Key Responsibilities**:
+
 - Define workflows that orchestrate multi-step activities
 - Implement retry policies for fault tolerance
 - Emit events to Kafka for async communication
 
 **Architecture Patterns**:
+
 - Activities are simple, synchronous functions (ValidateOrder, ReserveInventory)
 - Workflows coordinate activities and handle failures
 - Kafka producer sends messages once workflow reaches "Validated" state
 
 **Testing Approach**:
+
 - Unit test activities in isolation
 - Integration test workflows with Temporal test server
 - Verify Kafka events are emitted correctly
@@ -88,21 +91,25 @@ pnpm start           # Run production build
 **Technologies**: PostgreSQL, Hasura, GraphQL, SQL
 
 **Key Responsibilities**:
+
 - Design relational schema (Parts, Inventory, Orders)
 - Track foreign key relationships in Hasura
 - Create custom GraphQL Actions for business logic
 
 **Data Flow**:
+
 ```
 PostgreSQL (schema) → Hasura (auto-generated CRUD) → GraphQL (subscriptions & queries)
 ```
 
 **Key Patterns**:
+
 - Real-time subscriptions listen for Inventory changes
 - Custom Actions validate orders before insertion
 - Foreign key relationships maintain referential integrity
 
 **Testing Approach**:
+
 - Use Hasura test mode to verify schema and permissions
 - Write GraphQL queries/subscriptions in GraphiQL
 - Test Hasura Actions via webhook simulation
@@ -114,21 +121,25 @@ PostgreSQL (schema) → Hasura (auto-generated CRUD) → GraphQL (subscriptions 
 **Technologies**: React, Next.js, TypeScript, Apollo Client, Tailwind CSS
 
 **Key Responsibilities**:
+
 - Fetch Work Plan data via GraphQL queries
 - Render steps with real-time status updates
 - Log technician data via GraphQL mutations
 
 **Component Architecture**:
+
 - **Server Components** (`app/work-plans/[id]/page.tsx`): Initial data fetch
 - **Client Components**: Interactive forms and buttons that trigger mutations
 - **Apollo Client**: Local caching, optimistic updates, subscription handling
 
 **Key Patterns**:
+
 - Optimistic updates show "Checkmark" before backend confirms
 - Subscriptions keep step status in sync across technician devices
 - Error boundaries gracefully handle network failures
 
 **Testing Approach**:
+
 - Unit test React components with @testing-library
 - Integration test Apollo Client with mock GraphQL server
 - E2E test full workflows using Playwright
@@ -137,23 +148,26 @@ PostgreSQL (schema) → Hasura (auto-generated CRUD) → GraphQL (subscriptions 
 
 ## Key Files & Their Purposes
 
-| File | Purpose |
-|------|---------|
-| `about-me.md` | Interview context and Boltline overview |
-| `DESIGN.md` | Architecture patterns and setup guides for each practice |
-| `docs/start-from-here.md` | Original interview preparation resource |
+| File                      | Purpose                                                  |
+| ------------------------- | -------------------------------------------------------- |
+| `about-me.md`             | Interview context and Boltline overview                  |
+| `DESIGN.md`               | Architecture patterns and setup guides for each practice |
+| `docs/start-from-here.md` | Original interview preparation resource                  |
 
 ## Framework Integration Points
 
 **Between Temporal and Kafka**: Activities publish events that Kafka consumes
+
 - Workflow reaches "Validated" state → Activity emits to `shipment-events` topic
 - Other services subscribe to topic for async notifications
 
 **Between Hasura and Next.js**: GraphQL is the contract
+
 - Next.js components call Hasura via Apollo Client
 - Real-time subscriptions keep UI in sync with database changes
 
 **Between PostgreSQL and Hasura**: Schema drives GraphQL generation
+
 - Foreign keys become relationships in GraphQL schema
 - Hasura auto-generates queries, mutations, and subscriptions
 
@@ -172,6 +186,7 @@ When discussing architecture in your interview:
 ## Key Dependencies
 
 **All practices** require:
+
 - Docker & Docker Compose
 - Node.js 18+
 - pnpm

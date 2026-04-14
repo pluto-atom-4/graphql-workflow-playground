@@ -20,16 +20,19 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 ### Three Core Domains
 
 **Practice 1: Reliable Workflow Orchestration**
+
 - Problem: Manufacturing workflows fail mid-step (equipment crashes, network issues)
 - Solution: Temporal ensures workflow state survives failures
 - Selling Point: "Technician's tablet dies? Workflow recovers from checkpoint, not restart"
 
 **Practice 2: Digital Backbone (Real-Time Data)**
+
 - Problem: Technicians need live inventory, orders, parts data
 - Solution: Hasura + PostgreSQL + GraphQL subscriptions
 - Selling Point: "Auto-generated CRUD + subscriptions save weeks vs. hand-coded GraphQL servers"
 
 **Practice 3: Technician UX (Shop Floor Reality)**
+
 - Problem: Poor WiFi on shop floor → delays in data sync
 - Solution: Apollo Client optimistic updates + subscriptions
 - Selling Point: "Technician sees 'Complete' instantly; backend confirms async"
@@ -39,21 +42,25 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 When defining a feature, answer:
 
 ### What Problem Does It Solve?
-*e.g., "Technicians can't see real-time inventory changes; they rely on stale manual counts"*
+
+_e.g., "Technicians can't see real-time inventory changes; they rely on stale manual counts"_
 
 ### Which Practice(s) Does It Touch?
+
 - [ ] Practice 1 (Temporal Workflow)
 - [ ] Practice 2 (Hasura GraphQL)
 - [ ] Practice 3 (Next.js UI)
 
 ### Acceptance Criteria
+
 ```
 Given [context]
 When [user action]
 Then [expected outcome]
 ```
 
-*Example*:
+_Example_:
+
 ```
 Given an Order exists in the system
 When a technician completes a step
@@ -63,11 +70,13 @@ And inventory is updated in real-time via GraphQL subscription
 ```
 
 ### Technical Approach
+
 - Which technologies apply?
 - Any new schema changes?
 - How does this integrate with existing code?
 
 ### Interview Talking Points
+
 - How does this demonstrate reliability?
 - How does this show scalability?
 - What real-world constraints does this address?
@@ -75,18 +84,21 @@ And inventory is updated in real-time via GraphQL subscription
 ## Prioritization Framework
 
 ### High Priority (Critical for Interview)
+
 - Demonstrates **Temporal reliability** (failure recovery)
 - Demonstrates **GraphQL real-time** (subscriptions)
 - Demonstrates **Apollo optimistic updates** (shop floor WiFi)
 - Demonstrates **Kafka async messaging** (scale)
 
 ### Medium Priority (Nice to Have)
+
 - Additional workflow steps
 - Extra GraphQL queries/mutations
 - UI polish and accessibility
 - Comprehensive error handling
 
 ### Low Priority (Can Skip)
+
 - Analytics dashboards
 - Admin-only features
 - Deprecated functionality
@@ -94,18 +106,21 @@ And inventory is updated in real-time via GraphQL subscription
 ## Feature Examples
 
 ### Feature: Order Fulfillment Workflow
+
 - **Practices**: 1, 2, 3
 - **Interview Hook**: "Temporal ensures multi-day manufacturing workflows complete reliably"
 - **User Story**: Technician receives order, workflow validates inventory, confirms, completes
 - **Technical**: Workflow → Activities → Kafka events → GraphQL subscription → UI update
 
 ### Feature: Inventory Real-Time Updates
+
 - **Practices**: 2, 3
 - **Interview Hook**: "GraphQL subscriptions keep all technicians seeing live inventory"
 - **User Story**: When one technician reserves a part, all others see inventory decrease instantly
 - **Technical**: PostgreSQL change → Hasura subscription → Apollo cache update → UI refresh
 
 ### Feature: Optimistic Step Completion
+
 - **Practices**: 3
 - **Interview Hook**: "Apollo optimistic updates mean shop-floor feedback is instant, even with poor WiFi"
 - **User Story**: Technician clicks "Mark Complete", sees checkmark immediately, backend confirms async

@@ -7,6 +7,7 @@ The graphql-workflow-playground monorepo has been fully scaffolded according to 
 ## What Was Created
 
 ### ✅ Root Monorepo Configuration
+
 - `pnpm-workspace.yaml` — Declares all workspace packages
 - `package.json` — Root scripts and shared devDeps
 - `tsconfig.base.json` — Strict TypeScript base config (with `exactOptionalPropertyTypes`, `noUncheckedIndexedAccess`)
@@ -20,14 +21,17 @@ The graphql-workflow-playground monorepo has been fully scaffolded according to 
 ### ✅ Shared Packages
 
 #### `packages/tsconfig/`
+
 - `base.json`, `node.json`, `nextjs.json` — Reusable TypeScript configs
 
 #### `packages/shared-types/`
+
 - `inventory.types.ts` — `Part`, `InventoryItem`, `Order`, `PlaceOrderInput`, `PlaceOrderResponse`
 - `shipment.types.ts` — `ShipmentOrder`, `ValidateOrderResult`, `ReserveInventoryResult`, `ShipmentEvent`
 - `workflow.types.ts` — Temporal workflow signal/query types
 
 #### `packages/graphql-types/`
+
 - `codegen.ts` — GraphQL code generator config
 - `src/index.ts` — Re-export placeholder for generated types
 - Will generate types from Hasura schema after `pnpm install` and infra is running
@@ -35,6 +39,7 @@ The graphql-workflow-playground monorepo has been fully scaffolded according to 
 ### ✅ Infrastructure (`infra/`)
 
 #### Docker Compose
+
 - `infra/docker/docker-compose.shared.yml` — All shared services:
   - PostgreSQL (app) on 5432
   - PostgreSQL (Temporal) on 5433
@@ -45,10 +50,12 @@ The graphql-workflow-playground monorepo has been fully scaffolded according to 
   - Zookeeper on 2181
 
 #### Scripts
+
 - `infra/scripts/seed-db.sh` — Seed sample Parts/Inventory/Orders
 - `infra/scripts/wait-for-services.sh` — Health-check all services (for CI)
 
 #### Kubernetes Manifests
+
 - `infra/k8s/namespace.yaml` — boltline-playground namespace
 - `infra/k8s/practice-1/` — Temporal worker deployment, Kafka config
 - `infra/k8s/practice-2/` — Postgres statefulset, Hasura deployment, action-webhook
@@ -81,12 +88,14 @@ src/
 ```
 
 **Key Features**:
+
 - ShipmentWorkflow orchestrates 3 activities: ValidateOrder → ReserveInventory (with 3 retries) → EmitKafkaEvent
 - Retry policy on ReserveInventory with exponential backoff
 - Kafka producer publishes to `shipment-events` topic
 - Unit test for validateOrder activity
 
 **Run**:
+
 ```bash
 cd practice-1-temporal-kafka
 pnpm install
@@ -120,6 +129,7 @@ pnpm start:starter    # Trigger workflow
 ```
 
 **Key Features**:
+
 - PostgreSQL schema with 3 tables: parts, inventory, orders
 - Foreign key: orders.part_id → parts.id
 - Hasura auto-generates CRUD + real-time subscriptions
@@ -128,6 +138,7 @@ pnpm start:starter    # Trigger workflow
 - GraphQL files ready for codegen
 
 **Run**:
+
 ```bash
 cd practice-2-hasura-graphql
 pnpm install
@@ -166,6 +177,7 @@ pnpm install
 ```
 
 **Key Features**:
+
 - Next.js 14 App Router with TypeScript
 - Server Components for fast initial load
 - Client Components with Apollo Client mutations + subscriptions
@@ -175,6 +187,7 @@ pnpm install
 - Placeholder pages demonstrating architecture
 
 **Run**:
+
 ```bash
 cd practice-3-nextjs-graphql
 pnpm install
@@ -201,6 +214,7 @@ pnpm infra:up
 ```
 
 Wait ~30 seconds for all services to be healthy:
+
 - Hasura: http://localhost:8080/console
 - Temporal UI: http://localhost:8088
 - Kafka UI: http://localhost:8090
@@ -212,15 +226,18 @@ You should see the three tables (parts, inventory, orders) in Hasura.
 Each practice can be developed independently:
 
 **Practice 1 — Temporal & Kafka** (Workflow Orchestration)
+
 ```bash
 pnpm dev:p1          # Start Temporal worker in one terminal
 # In another terminal:
 cd practice-1-temporal-kafka
 pnpm start:starter   # Trigger a workflow
 ```
+
 Check the workflow in Temporal UI at http://localhost:8088
 
 **Practice 2 — Hasura & GraphQL** (Data Layer)
+
 ```bash
 # Already running via infra:up
 # Open GraphiQL at http://localhost:8080/console
@@ -228,6 +245,7 @@ Check the workflow in Temporal UI at http://localhost:8088
 ```
 
 **Practice 3 — Next.js & GraphQL** (Frontend)
+
 ```bash
 pnpm dev:p3
 # http://localhost:3000

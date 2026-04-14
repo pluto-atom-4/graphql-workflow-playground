@@ -1,7 +1,7 @@
 # graphql-workflow-playground
 
 > **Interview preparation playground for Stoke Space Boltline platform**
-> 
+>
 > Master Temporal, Kafka, Hasura, Next.js, and GraphQL through three progressive practice exercises.
 
 ## 🎯 Project Overview
@@ -11,16 +11,19 @@ This is a comprehensive monorepo that simulates the core technologies behind **B
 ### What You'll Build
 
 **Practice 1: Temporal & Kafka** — Reliable workflow orchestration
+
 - Define workflows that recover from failures
 - Implement retry policies for transient errors
 - Emit events to Kafka for async communication
 
 **Practice 2: Hasura & GraphQL** — Digital backbone with real-time subscriptions
+
 - Design relational schema (Parts, Inventory, Orders)
 - Auto-generate GraphQL CRUD + subscriptions
 - Create custom Actions for business logic
 
 **Practice 3: Next.js & Apollo** — Technician work plans UI
+
 - Server Components for fast initial load
 - Apollo Client with optimistic updates
 - Real-time subscriptions on shop floor
@@ -63,6 +66,7 @@ pnpm infra:up
 ```
 
 Wait ~30 seconds for services to be healthy. Then access:
+
 - **Hasura Console**: http://localhost:8080
 - **Temporal UI**: http://localhost:8088
 - **PostgreSQL**: localhost:5432
@@ -70,6 +74,7 @@ Wait ~30 seconds for services to be healthy. Then access:
 ### 3. Run Individual Practices
 
 **Practice 1 — Temporal & Kafka**:
+
 ```bash
 pnpm dev:p1          # Start worker in one terminal
 # In another:
@@ -79,6 +84,7 @@ pnpm start:starter   # Trigger a workflow
 ```
 
 **Practice 2 — Hasura & GraphQL**:
+
 ```bash
 # Already running via infra:up
 # Open http://localhost:8080 → Console → GraphiQL tab
@@ -86,6 +92,7 @@ pnpm start:starter   # Trigger a workflow
 ```
 
 **Practice 3 — Next.js & Apollo**:
+
 ```bash
 pnpm dev:p3
 # Open http://localhost:3000
@@ -201,13 +208,13 @@ graphql-workflow-playground/
 
 This project uses **five specialized AI agents** to streamline development:
 
-| Agent | Role | Use When |
-|-------|------|----------|
-| **Product Manager** | Defines features & requirements | Creating acceptance criteria |
-| **Orchestrator** | Plans work & manages dependencies | Breaking down tasks |
-| **Developer** | Implements code | Writing features |
-| **Tester** | Designs tests & validates | Creating test files |
-| **Reviewer** | Reviews code quality | Checking for issues |
+| Agent               | Role                              | Use When                     |
+| ------------------- | --------------------------------- | ---------------------------- |
+| **Product Manager** | Defines features & requirements   | Creating acceptance criteria |
+| **Orchestrator**    | Plans work & manages dependencies | Breaking down tasks          |
+| **Developer**       | Implements code                   | Writing features             |
+| **Tester**          | Designs tests & validates         | Creating test files          |
+| **Reviewer**        | Reviews code quality              | Checking for issues          |
 
 See `.copilot/agents/` for detailed responsibilities and usage patterns.
 
@@ -233,14 +240,14 @@ Read `docs/agent-prompt-flows.md` for complete guide.
 
 ### Core Technologies
 
-| Technology | Purpose | Practice |
-|-----------|---------|----------|
-| **Temporal** | Durable workflow orchestration | P1 |
-| **Kafka** | Event streaming & messaging | P1 |
-| **PostgreSQL** | Relational database | P2 |
-| **Hasura** | Auto-generated GraphQL + subscriptions | P2 |
-| **Next.js** | React framework with SSR | P3 |
-| **Apollo Client** | GraphQL client with caching | P3 |
+| Technology        | Purpose                                | Practice |
+| ----------------- | -------------------------------------- | -------- |
+| **Temporal**      | Durable workflow orchestration         | P1       |
+| **Kafka**         | Event streaming & messaging            | P1       |
+| **PostgreSQL**    | Relational database                    | P2       |
+| **Hasura**        | Auto-generated GraphQL + subscriptions | P2       |
+| **Next.js**       | React framework with SSR               | P3       |
+| **Apollo Client** | GraphQL client with caching            | P3       |
 
 ### Infrastructure
 
@@ -261,12 +268,12 @@ Activities are **simple, idempotent, synchronous** functions:
 ```typescript
 // ✅ GOOD: Idempotent, deterministic
 async function validateOrder(order: Order): Promise<ValidationResult> {
-  return { valid: true, message: 'OK' };
+  return { valid: true, message: "OK" };
 }
 
 // Workflow coordinates activities
 const result = await workflow.executeActivity(validateOrder, order, {
-  retryPolicy: { maximumAttempts: 3 }
+  retryPolicy: { maximumAttempts: 3 },
 });
 ```
 
@@ -292,11 +299,11 @@ UI responds instantly, backend confirms async:
 const [completeStep] = useMutation(COMPLETE_STEP, {
   optimisticResponse: {
     completeStep: {
-      __typename: 'Step',
+      __typename: "Step",
       id: stepId,
-      status: 'COMPLETED'
-    }
-  }
+      status: "COMPLETED",
+    },
+  },
 });
 ```
 
@@ -319,15 +326,19 @@ Practice 3 Tests ───┘
 When discussing this project at Stoke Space, emphasize:
 
 1. **"Temporal ensures workflow reliability"**
+
    > If a technician's tablet crashes mid-manufacturing step, Temporal recovers from the last checkpoint—critical for multi-day workflows.
 
 2. **"Kafka handles high-volume async events"**
+
    > Shop floor sensor data flows through Kafka without blocking synchronous APIs, enabling scalability.
 
 3. **"Hasura accelerates GraphQL development"**
+
    > Auto-generating CRUD endpoints and subscriptions saves weeks versus hand-written GraphQL servers.
 
 4. **"Apollo optimistic updates improve UX"**
+
    > Technicians see instant feedback on poor WiFi (shop floor reality), while the backend confirms async.
 
 5. **"Monorepo with Turborepo scales cleanly"**
@@ -358,18 +369,18 @@ When discussing this project at Stoke Space, emphasize:
 
 ## 📚 Documentation
 
-| Document | Purpose |
-|----------|---------|
-| **README.md** | This file |
-| **DESIGN.md** | Architecture patterns & core concepts |
-| **CLAUDE.md** | Claude Code guidance & tech stack details |
-| **about-me.md** | Interview context for Stoke Space |
-| **docs/start-from-here.md** | Interview prep checklist |
-| **docs/agent-prompt-flows.md** | Developer onboarding with agents |
-| **docs/agent-quick-reference.md** | One-page quick reference |
-| **docs/github-configuration.md** | GitHub Actions & CI/CD setup |
-| **.github/copilot-instructions.md** | Copilot development guide |
-| **.copilot/agents/** | Five specialized agent guides |
+| Document                            | Purpose                                   |
+| ----------------------------------- | ----------------------------------------- |
+| **README.md**                       | This file                                 |
+| **DESIGN.md**                       | Architecture patterns & core concepts     |
+| **CLAUDE.md**                       | Claude Code guidance & tech stack details |
+| **about-me.md**                     | Interview context for Stoke Space         |
+| **docs/start-from-here.md**         | Interview prep checklist                  |
+| **docs/agent-prompt-flows.md**      | Developer onboarding with agents          |
+| **docs/agent-quick-reference.md**   | One-page quick reference                  |
+| **docs/github-configuration.md**    | GitHub Actions & CI/CD setup              |
+| **.github/copilot-instructions.md** | Copilot development guide                 |
+| **.copilot/agents/**                | Five specialized agent guides             |
 
 ## 🛠️ Common Commands
 
@@ -465,7 +476,7 @@ Edit `.env` or `docker-compose.yml` to use different ports:
 services:
   postgres:
     ports:
-      - "5432:5432"  # Change first number
+      - "5432:5432" # Change first number
 ```
 
 ## 📞 Support
