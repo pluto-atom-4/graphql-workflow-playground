@@ -73,6 +73,9 @@ importers:
       '@temporalio/worker':
         specifier: ^1.10.0
         version: 1.16.0(tslib@2.8.1)
+      '@temporalio/workflow':
+        specifier: ^1.10.0
+        version: 1.16.0
       kafkajs:
         specifier: ^2.2.4
         version: 2.2.4

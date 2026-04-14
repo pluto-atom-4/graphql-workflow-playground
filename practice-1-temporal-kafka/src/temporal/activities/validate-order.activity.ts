@@ -1,4 +1,3 @@
-import { defineSignal, defineQuery } from "@temporalio/activity";
 import type { ValidateOrderResult, ShipmentOrder } from "@boltline/shared-types";
 
 export async function validateOrder(order: ShipmentOrder): Promise<ValidateOrderResult> {
@@ -6,11 +5,18 @@ export async function validateOrder(order: ShipmentOrder): Promise<ValidateOrder
   console.log(`Validating order: ${order.orderId}`);
 
   // In a real app, this would check against a database
-  const isValid = order.quantity > 0 && order.partId && order.orderId;
+  const isValid = Boolean(order.quantity > 0 && order.partId && order.orderId);
+
+  if (isValid) {
+    return {
+      valid: true,
+      orderId: order.orderId,
+    };
+  }
 
   return {
-    valid: isValid,
+    valid: false,
     orderId: order.orderId,
-    reason: isValid ? undefined : "Invalid order data",
+    reason: "Invalid order data",
   };
 }

@@ -18,6 +18,7 @@
     "@temporalio/activity": "^1.10.0",
     "@temporalio/client": "^1.10.0",
     "@temporalio/worker": "^1.10.0",
+    "@temporalio/workflow": "^1.10.0",
     "kafkajs": "^2.2.4",
     "nanoid": "^4.0.2"
   },

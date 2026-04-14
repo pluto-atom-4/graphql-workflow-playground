@@ -1,23 +1,23 @@
-import { Worker } from "@temporalio/worker";
-import * as activities from "./activities/validate-order.activity";
-import * as activitiesReserve from "./activities/reserve-inventory.activity";
-import * as activitiesKafka from "./activities/emit-kafka-event.activity";
-import * as workflows from "./workflows/shipment.workflow";
+import { Worker, NativeConnection } from "@temporalio/worker";
+import * as validateOrderActivity from "./activities/validate-order.activity";
+import * as reserveInventoryActivity from "./activities/reserve-inventory.activity";
+import * as emitKafkaEventActivity from "./activities/emit-kafka-event.activity";
 import { temporalConfig } from "../config/temporal.config";
 
 async function main(): Promise<void> {
+  const connection = await NativeConnection.connect({
+    address: temporalConfig.address,
+  });
+
   const worker = await Worker.create({
     workflowsPath: require.resolve("./workflows"),
-    activitiesPath: [
-      require.resolve("./activities/validate-order.activity"),
-      require.resolve("./activities/reserve-inventory.activity"),
-      require.resolve("./activities/emit-kafka-event.activity"),
-    ],
-    taskQueue: temporalConfig.taskQueue,
-    replayHistories: [],
-    serverOptions: {
-      address: temporalConfig.address,
+    activities: {
+      validateOrder: validateOrderActivity.validateOrder,
+      reserveInventory: reserveInventoryActivity.reserveInventory,
+      emitKafkaEvent: emitKafkaEventActivity.emitKafkaEvent,
     },
+    taskQueue: temporalConfig.taskQueue,
+    connection,
   });
 
   console.log("Starting Temporal worker...");

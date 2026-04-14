@@ -1,11 +1,7 @@
 import {
   proxyActivities,
   ApplicationFailure,
-  RetryPolicy,
 } from "@temporalio/workflow";
-import { validateOrder } from "../activities/validate-order.activity";
-import { reserveInventory } from "../activities/reserve-inventory.activity";
-import { emitKafkaEvent } from "../activities/emit-kafka-event.activity";
 import type { ShipmentOrder } from "@boltline/shared-types";
 
 const activities = proxyActivities<typeof import("../activities/validate-order.activity")>({
@@ -16,12 +12,12 @@ const activitiesReserve = proxyActivities<
   typeof import("../activities/reserve-inventory.activity")
 >({
   startToCloseTimeout: "1 minute",
-  retry: new RetryPolicy({
+  retry: {
     initialInterval: "1s",
     backoffCoefficient: 2,
     maximumInterval: "10s",
     maximumAttempts: 3,
-  }),
+  },
 });
 
 const activitiesKafka = proxyActivities<
