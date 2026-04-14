@@ -1,0 +1,10 @@
+{
+  "extends": ["../../../.eslintrc.base.json"],
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  }
+}
