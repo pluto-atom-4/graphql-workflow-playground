@@ -1,7 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
-pnpm-lock.yaml
+# pnpm-lock.yaml is COMMITTED (required for CI/CD consistency)
 package-lock.json
 yarn.lock
 
