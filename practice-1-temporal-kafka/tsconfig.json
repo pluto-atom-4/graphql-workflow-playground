@@ -4,7 +4,8 @@
     "ignoreDeprecations": "6.0",
     "rootDir": "src",
     "outDir": "dist",
-    "module": "CommonJS"
+    "module": "CommonJS",
+    "types": ["node", "jest"]
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "__tests__/**/*.ts"]
 }
