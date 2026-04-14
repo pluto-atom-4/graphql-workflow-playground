@@ -2,5 +2,10 @@
   "name": "@boltline/tsconfig",
   "version": "1.0.0",
   "private": true,
-  "files": ["*.json"]
+  "files": ["*.json"],
+  "exports": {
+    "./base": "./base.json",
+    "./node": "./node.json",
+    "./nextjs": "./nextjs.json"
+  }
 }

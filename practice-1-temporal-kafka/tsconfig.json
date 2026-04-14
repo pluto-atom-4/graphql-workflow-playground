@@ -1,9 +1,10 @@
 {
-  "extends": "@boltline/tsconfig/node.json",
-  "include": ["src/**/*.ts"],
+  "extends": "../packages/tsconfig/node.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "rootDir": "src",
     "outDir": "dist",
     "module": "CommonJS"
-  }
+  },
+  "include": ["src/**/*.ts"]
 }
