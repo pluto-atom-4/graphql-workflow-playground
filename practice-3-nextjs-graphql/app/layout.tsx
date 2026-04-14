@@ -8,7 +8,11 @@ export const metadata: Metadata = {
     "A practice application demonstrating Temporal, Kafka, Hasura, and Next.js integration",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }): JSX.Element {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}): React.ReactElement {
   return (
     <html lang="en">
       <body>

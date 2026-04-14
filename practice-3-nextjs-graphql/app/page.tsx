@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Home(): JSX.Element {
+export default function Home(): React.ReactElement {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800">
       <div className="container mx-auto px-4 py-20">
