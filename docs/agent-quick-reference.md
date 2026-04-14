@@ -6,19 +6,20 @@
 
 ## The Agent Team
 
-| Agent | Icon | Purpose |
-|-------|------|---------|
-| **Product Manager** | 📋 | Defines features, requirements, acceptance criteria |
-| **Orchestrator** | 🎯 | Plans work, tracks dependencies, sequences tasks |
-| **Developer** | 💻 | Writes code, implements features, fixes bugs |
-| **Tester** | ✅ | Designs tests, validates code, writes test files |
-| **Reviewer** | 👀 | Reviews code, validates architecture, catches issues |
+| Agent               | Icon | Purpose                                              |
+| ------------------- | ---- | ---------------------------------------------------- |
+| **Product Manager** | 📋   | Defines features, requirements, acceptance criteria  |
+| **Orchestrator**    | 🎯   | Plans work, tracks dependencies, sequences tasks     |
+| **Developer**       | 💻   | Writes code, implements features, fixes bugs         |
+| **Tester**          | ✅   | Designs tests, validates code, writes test files     |
+| **Reviewer**        | 👀   | Reviews code, validates architecture, catches issues |
 
 ---
 
 ## When to Use Each Agent
 
 ### 📋 Product Manager
+
 ```
 @product-manager
 
@@ -31,6 +32,7 @@ Consider:
 ```
 
 ### 🎯 Orchestrator
+
 ```
 @orchestrator
 
@@ -44,6 +46,7 @@ Provide:
 ```
 
 ### 💻 Developer
+
 ```
 @developer
 
@@ -55,6 +58,7 @@ Files: [paths]
 ```
 
 ### ✅ Tester
+
 ```
 @tester
 
@@ -67,6 +71,7 @@ Must test:
 ```
 
 ### 👀 Reviewer
+
 ```
 @reviewer
 
@@ -127,6 +132,7 @@ Output:
 ## Quick Tips
 
 ✅ **Be Specific**
+
 ```
 ❌ "Help me implement inventory"
 ✅ "Implement Apollo Client subscription for inventory updates
@@ -134,6 +140,7 @@ Output:
 ```
 
 ✅ **Provide Context**
+
 ```
 ❌ "Write a test"
 ✅ "Write Jest test for useInventorySubscription hook.
@@ -141,12 +148,14 @@ Output:
 ```
 
 ✅ **Use Project Docs**
+
 - `.github/copilot-instructions.md` — Commands & conventions
 - `DESIGN.md` — Architecture patterns
 - `CLAUDE.md` — Technology details
 - `.copilot/agents/` — Agent responsibilities
 
 ✅ **Chain Agents** (don't ask one to do everything)
+
 ```
 @developer → write code
 @tester → write tests
@@ -154,6 +163,7 @@ Output:
 ```
 
 ✅ **Reference Previous Steps**
+
 ```
 Based on this implementation from Developer:
 [paste the code]
@@ -193,6 +203,7 @@ Now @tester, write tests for it...
 ## Red Flags 🚩
 
 Don't ask one agent to:
+
 - Design + implement + test + review (breaks specialization)
 - Work on multiple unrelated tasks (loses focus)
 - Make architectural decisions without context (may miss constraints)
@@ -229,13 +240,13 @@ Verify the approach is correct
 
 ## Prompt Anti-Patterns
 
-| ❌ Anti-Pattern | ✅ Better Approach |
-|---|---|
-| "Help me" (too vague) | "Implement X with these requirements" |
-| No context | Include files, constraints, background |
-| One agent for everything | Chain agents by specialty |
+| ❌ Anti-Pattern                 | ✅ Better Approach                      |
+| ------------------------------- | --------------------------------------- |
+| "Help me" (too vague)           | "Implement X with these requirements"   |
+| No context                      | Include files, constraints, background  |
+| One agent for everything        | Chain agents by specialty               |
 | "Is this right?" (no specifics) | "@reviewer Check for [specific issues]" |
-| Too much rambling | Concise, structured requirements |
+| Too much rambling               | Concise, structured requirements        |
 
 ---
 

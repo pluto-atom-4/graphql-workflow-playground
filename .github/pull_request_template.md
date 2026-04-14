@@ -2,6 +2,7 @@ name: PR Template
 description: Pull request template for feature development
 
 # This template guides developers through creating pull requests
+
 # that reference the AI agent workflow
 
 ---
@@ -11,10 +12,13 @@ description: Pull request template for feature development
 <!-- Describe what this PR accomplishes -->
 
 ### Related Issue
+
 <!-- Link to the issue this PR addresses -->
+
 - Closes #123
 
 ### Type of Change
+
 - [ ] 🐛 Bug fix
 - [ ] ✨ New feature
 - [ ] 🔧 Configuration/infrastructure
@@ -22,6 +26,7 @@ description: Pull request template for feature development
 - [ ] ♻️ Refactoring
 
 ## Which Practice Area(s)?
+
 - [ ] Practice 1 — Temporal & Kafka
 - [ ] Practice 2 — Hasura & GraphQL
 - [ ] Practice 3 — Next.js & Apollo
@@ -50,23 +55,28 @@ See `.copilot/agents/` for details on each role.
 - [ ] Updated dependencies
 
 ### Files Changed
+
 <!-- List key files modified -->
-- 
-- 
-- 
+
+-
+-
+-
 
 ## Testing
 
 <!-- Describe how this was tested -->
 
 ### Unit Tests
+
 - [ ] All tests pass: `pnpm test`
 - [ ] Coverage adequate (>80%)
 
 ### Integration Tests
+
 - [ ] Cross-practice integration verified (if applicable)
 
 ### Manual Testing
+
 - [ ] Feature tested locally
 - [ ] Error cases verified
 
@@ -91,6 +101,7 @@ See `.copilot/agents/` for details on each role.
 <!-- How does this PR demonstrate the Stoke Space / Boltline context? -->
 
 ### Boltline Impact
+
 - [ ] Demonstrates Temporal reliability
 - [ ] Demonstrates GraphQL real-time capability
 - [ ] Demonstrates Apollo optimistic updates
@@ -98,6 +109,7 @@ See `.copilot/agents/` for details on each role.
 - [ ] Demonstrates monorepo coordination
 
 ### Talking Points
+
 <!-- Add any interview talking points demonstrated in this PR -->
 
 ## Checklist
@@ -123,4 +135,4 @@ See `.copilot/agents/` for details on each role.
 
 ---
 
-*This template follows the agent-driven development workflow described in `docs/agent-prompt-flows.md`*
+_This template follows the agent-driven development workflow described in `docs/agent-prompt-flows.md`_

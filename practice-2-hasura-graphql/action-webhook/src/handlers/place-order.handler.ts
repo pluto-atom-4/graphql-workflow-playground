@@ -34,9 +34,7 @@ export async function handlePlaceOrder(
   }
 
   // Check if part exists
-  const partResult = await query("SELECT id FROM parts WHERE id = $1", [
-    part_id,
-  ]);
+  const partResult = await query("SELECT id FROM parts WHERE id = $1", [part_id]);
   if (partResult.rows.length === 0) {
     res.status(400).json({
       orderId: "",
@@ -51,8 +49,7 @@ export async function handlePlaceOrder(
     "SELECT SUM(quantity) as total FROM inventory WHERE part_id = $1",
     [part_id]
   );
-  const availableQuantity =
-    inventoryResult.rows[0]?.total ?? 0;
+  const availableQuantity = inventoryResult.rows[0]?.total ?? 0;
 
   if (availableQuantity < quantity) {
     res.status(400).json({

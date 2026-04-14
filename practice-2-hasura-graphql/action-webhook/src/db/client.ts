@@ -1,7 +1,8 @@
 import { Pool, PoolClient, QueryResult } from "pg";
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL ?? "postgres://boltline:boltline@localhost:5432/boltline_dev",
+  connectionString:
+    process.env.DATABASE_URL ?? "postgres://boltline:boltline@localhost:5432/boltline_dev",
 });
 
 pool.on("error", (err: Error): void => {

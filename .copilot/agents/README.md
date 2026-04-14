@@ -5,17 +5,20 @@ This directory contains role-based agent configurations for the graphql-workflow
 ## Agent Roles
 
 ### 🧑‍💻 [Developer](./developer.md)
+
 **Focus**: Implementation, code quality, testing
 
 Writes features, fixes bugs, and maintains code across all three practices. Ensures TypeScript strict mode, proper error handling, and project conventions.
 
 **Key Responsibilities**:
+
 - Implement features and bug fixes
 - Write and run tests locally
 - Follow TypeScript/ESLint conventions
 - Update dependencies
 
 **Tools & Commands**:
+
 ```bash
 pnpm dev           # Development server
 pnpm test          # Run tests
@@ -26,11 +29,13 @@ pnpm format        # Format code
 ---
 
 ### 🎯 [Orchestrator](./orchestrator.md)
+
 **Focus**: Coordination, workflow, task tracking
 
 Manages complex work across three practices, tracks dependencies, breaks down tasks, and ensures architectural alignment. Acts as project manager for technical execution.
 
 **Key Responsibilities**:
+
 - Coordinate work across Temporal, Hasura, Next.js
 - Manage task dependencies
 - Track progress and blockers
@@ -38,6 +43,7 @@ Manages complex work across three practices, tracks dependencies, breaks down ta
 - Resolve escalated issues
 
 **Key Patterns**:
+
 - Sequential workflows (one practice at a time)
 - Parallel development (independent features)
 - Blocked task escalation
@@ -45,11 +51,13 @@ Manages complex work across three practices, tracks dependencies, breaks down ta
 ---
 
 ### 📋 [Product Manager](./product-manager.md)
+
 **Focus**: Requirements, prioritization, interview alignment
 
 Defines features, validates against Boltline platform requirements, and ensures development aligns with interview preparation goals and real-world constraints.
 
 **Key Responsibilities**:
+
 - Define feature requirements with acceptance criteria
 - Prioritize work using interview/business value
 - Validate features against shop-floor reality
@@ -57,6 +65,7 @@ Defines features, validates against Boltline platform requirements, and ensures 
 - Document business logic
 
 **Interview Checkpoints**:
+
 - Temporal reliability (failure recovery)
 - GraphQL real-time (subscriptions)
 - Apollo optimistic updates (poor WiFi)
@@ -65,11 +74,13 @@ Defines features, validates against Boltline platform requirements, and ensures 
 ---
 
 ### 👀 [Reviewer](./reviewer.md)
+
 **Focus**: Code quality, architecture, standards
 
 Performs thorough code reviews, validates design decisions, ensures quality standards, and identifies bugs before they reach production.
 
 **Key Responsibilities**:
+
 - Review code for correctness and quality
 - Validate architectural decisions
 - Check TypeScript type safety
@@ -77,6 +88,7 @@ Performs thorough code reviews, validates design decisions, ensures quality stan
 - Identify bugs and edge cases
 
 **Review Checklist**:
+
 - ✅ TypeScript strict mode passes
 - ✅ Tests are adequate (>80% coverage)
 - ✅ ESLint/Prettier checks pass
@@ -86,11 +98,13 @@ Performs thorough code reviews, validates design decisions, ensures quality stan
 ---
 
 ### 🧪 [Tester](./tester.md)
+
 **Focus**: Testing strategy, test automation, quality assurance
 
 Designs and executes comprehensive test strategies, validates edge cases, and ensures features work end-to-end across all practices.
 
 **Key Responsibilities**:
+
 - Design test plans for new features
 - Write unit, integration, E2E tests
 - Identify test gaps
@@ -99,6 +113,7 @@ Designs and executes comprehensive test strategies, validates edge cases, and en
 - Report test results
 
 **Test Types**:
+
 - Unit tests (Jest)
 - Integration tests (Jest + test containers)
 - E2E tests (Playwright)
@@ -261,30 +276,35 @@ Tester: "Verify integration works"
 ## Best Practices by Role
 
 ### Developer
+
 - Always run tests locally before committing
 - Use `pnpm lint:fix` to auto-fix style issues
 - Reference similar patterns in existing code
 - Ask Reviewer for help on architectural questions
 
 ### Orchestrator
+
 - Document blockers clearly
 - Sequence tasks to minimize dependencies
 - Regular status updates to team
 - Escalate infrastructure/tooling issues
 
 ### Product Manager
+
 - Validate features against real-world shop-floor constraints
 - Keep interview talking points in focus
 - Write clear acceptance criteria
 - Collaborate with Orchestrator on feasibility
 
 ### Reviewer
+
 - Provide constructive feedback with examples
 - Point to specific lines/files
 - Suggest alternatives, not just criticism
 - Ask "Why?" to understand developer intent
 
 ### Tester
+
 - Design tests that cover happy path + edge cases
 - Test integration across practices early
 - Automate tests; don't rely on manual QA
@@ -297,6 +317,7 @@ Tester: "Verify integration works"
 All agents use **Claude Haiku 4.5** (configured in `.copilot/config.json`).
 
 This provides:
+
 - Fast turnaround on routine tasks
 - Cost-effective for large codebases
 - Sufficient capability for code review, testing, coordination

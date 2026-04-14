@@ -16,13 +16,13 @@ Instead of asking one general assistant, you invoke specific agents for specific
 
 ## Agent Overview
 
-| Agent | When to Use | Example Prompt |
-|-------|-----------|---------|
-| **Product Manager** | Define a feature, validate requirements | "Create acceptance criteria for a new workflow feature" |
-| **Orchestrator** | Plan complex work, break tasks down, track dependencies | "Break down the order fulfillment feature into tasks" |
-| **Developer** | Write code, fix bugs, implement features | "Implement the validateOrder activity in Temporal" |
-| **Tester** | Design tests, validate edge cases, write test code | "Write Jest tests for the validateOrder activity" |
-| **Reviewer** | Code review, validate architecture, catch issues | "Review my Apollo Client mutation for performance issues" |
+| Agent               | When to Use                                             | Example Prompt                                            |
+| ------------------- | ------------------------------------------------------- | --------------------------------------------------------- |
+| **Product Manager** | Define a feature, validate requirements                 | "Create acceptance criteria for a new workflow feature"   |
+| **Orchestrator**    | Plan complex work, break tasks down, track dependencies | "Break down the order fulfillment feature into tasks"     |
+| **Developer**       | Write code, fix bugs, implement features                | "Implement the validateOrder activity in Temporal"        |
+| **Tester**          | Design tests, validate edge cases, write test code      | "Write Jest tests for the validateOrder activity"         |
+| **Reviewer**        | Code review, validate architecture, catch issues        | "Review my Apollo Client mutation for performance issues" |
 
 ## The Feature Development Workflow
 
@@ -31,6 +31,7 @@ Here's how agents work together to take a feature from idea to production:
 ### Phase 1: Definition (Product Manager)
 
 **Your Prompt:**
+
 ```
 @product-manager
 
@@ -47,6 +48,7 @@ Output: User stories and acceptance criteria (Given/When/Then)
 ```
 
 **What You Get:**
+
 - Clear feature definition
 - Acceptance criteria
 - Technical approach notes
@@ -55,6 +57,7 @@ Output: User stories and acceptance criteria (Given/When/Then)
 ### Phase 2: Planning (Orchestrator)
 
 **Your Prompt:**
+
 ```
 @orchestrator
 
@@ -70,6 +73,7 @@ Please provide:
 ```
 
 **What You Get:**
+
 - Task list with clear order
 - Dependency graph
 - Risk assessment
@@ -78,6 +82,7 @@ Please provide:
 ### Phase 3: Implementation (Developer)
 
 **Your Prompt:**
+
 ```
 @developer
 
@@ -98,6 +103,7 @@ Requirements:
 ```
 
 **What You Get:**
+
 - Production-ready implementation
 - Tests included if appropriate
 - TypeScript types
@@ -106,6 +112,7 @@ Requirements:
 ### Phase 4: Testing (Tester)
 
 **Your Prompt:**
+
 ```
 @tester
 
@@ -123,6 +130,7 @@ Target: >85% coverage
 ```
 
 **What You Get:**
+
 - Test file with full coverage
 - Mock setup examples
 - Edge case tests
@@ -131,6 +139,7 @@ Target: >85% coverage
 ### Phase 5: Code Review (Reviewer)
 
 **Your Prompt:**
+
 ```
 @reviewer
 
@@ -149,6 +158,7 @@ Provide specific line-by-line feedback.
 ```
 
 **What You Get:**
+
 - Detailed code review
 - Bugs identified
 - Suggestions for improvement
@@ -161,10 +171,11 @@ Provide specific line-by-line feedback.
 ### Scenario 1: Bug Fix
 
 **Step 1: Understand (Orchestrator)**
+
 ```
 @orchestrator
 
-I found a bug: GraphQL subscription for inventory doesn't update the UI 
+I found a bug: GraphQL subscription for inventory doesn't update the UI
 when another technician reserves a part.
 
 Help me diagnose:
@@ -174,6 +185,7 @@ Help me diagnose:
 ```
 
 **Step 2: Fix (Developer)**
+
 ```
 @developer
 
@@ -184,13 +196,14 @@ File: practice-3-nextjs-graphql/lib/hooks/useInventorySubscription.ts
 Current code updates cache like:
   cache.modify({ fields: { inventory: () => newData } })
 
-But this isn't reactive. How do I properly update the cache 
+But this isn't reactive. How do I properly update the cache
 so the component re-renders?
 
 Show me the correct Apollo cache update pattern for subscriptions.
 ```
 
 **Step 3: Test (Tester)**
+
 ```
 @tester
 
@@ -208,6 +221,7 @@ Write a Jest test to verify:
 ```
 
 **Step 4: Review (Reviewer)**
+
 ```
 @reviewer
 
@@ -227,10 +241,11 @@ Focus on:
 ### Scenario 2: Cross-Practice Feature
 
 **Step 1: Define (Product Manager)**
+
 ```
 @product-manager
 
-We want to add a new feature: "Technician can mark a part as defective 
+We want to add a new feature: "Technician can mark a part as defective
 and it reduces inventory."
 
 This touches:
@@ -242,10 +257,11 @@ Create acceptance criteria and approach for each practice.
 ```
 
 **Step 2: Plan (Orchestrator)**
+
 ```
 @orchestrator
 
-Using these acceptance criteria from the Product Manager, 
+Using these acceptance criteria from the Product Manager,
 create a task breakdown:
 
 Feature: Mark Part as Defective
@@ -259,6 +275,7 @@ For each task:
 ```
 
 **Step 3-5: Implement → Test → Review (Developer → Tester → Reviewer)**
+
 ```
 @developer
 
@@ -284,30 +301,35 @@ Then: `@tester` writes tests, `@reviewer` checks quality.
 ## Quick Reference: When to Use Each Agent
 
 ### Use Product Manager When:
+
 - ❓ "What should this feature do?"
 - ❓ "What are the acceptance criteria?"
 - ❓ "How does this relate to shop-floor reality?"
 - ❓ "Is this the right approach for the interview?"
 
 ### Use Orchestrator When:
+
 - 📋 "How should I break this down?"
 - 📋 "What's the right order to implement?"
 - 📋 "What are the dependencies?"
 - 📋 "What might block this work?"
 
 ### Use Developer When:
+
 - 💻 "How do I implement this?"
 - 💻 "Show me example code"
 - 💻 "What's the right pattern for this?"
 - 💻 "I have a compile error, help me fix it"
 
 ### Use Tester When:
+
 - ✅ "How do I test this feature?"
 - ✅ "Write tests for my code"
 - ✅ "What edge cases should I test?"
 - ✅ "Is my test coverage adequate?"
 
 ### Use Reviewer When:
+
 - 👀 "Please review my code"
 - 👀 "Are there bugs in this?"
 - 👀 "Is this architecturally sound?"
@@ -320,12 +342,14 @@ Then: `@tester` writes tests, `@reviewer` checks quality.
 ### 1. Be Specific
 
 **❌ Bad Prompt:**
+
 ```
 @developer
 Help me implement the inventory feature
 ```
 
 **✅ Good Prompt:**
+
 ```
 @developer
 Implement a GraphQL subscription for inventory updates in Practice 3.
@@ -349,7 +373,7 @@ Include relevant files, requirements, and constraints:
 ```
 @developer
 
-Update the Temporal workflow to emit a Kafka event after inventory 
+Update the Temporal workflow to emit a Kafka event after inventory
 is reserved.
 
 Current workflow: practice-1-temporal-kafka/temporal/workflows/shipment.ts
@@ -438,7 +462,7 @@ Sometimes you need multiple agents in one discussion. Use this pattern:
 Scenario: Inventory feature is slow
 
 @orchestrator
-The inventory subscription is causing performance issues. 
+The inventory subscription is causing performance issues.
 How should we approach this?
 
 → (get diagnosis and task breakdown)
@@ -593,7 +617,7 @@ Bad:  @developer: Write code, write tests, review yourself
 
 Good: @developer: Write code
       ↓
-      @tester: Write tests  
+      @tester: Write tests
       ↓
       @reviewer: Review code
 ```
@@ -621,7 +645,7 @@ Don't just get code; understand why:
 ```
 @developer
 
-Implement the validateOrder activity. 
+Implement the validateOrder activity.
 
 Also explain:
 1. Why must activities be idempotent?
@@ -638,7 +662,7 @@ Remind agents about the interview context:
 
 Review this Temporal workflow implementation.
 
-Remember: This is for Stoke Space interview on Boltline platform. 
+Remember: This is for Stoke Space interview on Boltline platform.
 Emphasize how this demonstrates reliability and fault tolerance.
 
 Check:
@@ -653,6 +677,7 @@ Check:
 ### Issue: Agent Response Doesn't Match Your Project
 
 **Solution**: Provide more specific context
+
 ```
 @developer
 
@@ -672,6 +697,7 @@ Follow the pattern used in: [similar file]
 ### Issue: Agent Missing Important Details
 
 **Solution**: Ask for clarification
+
 ```
 @developer
 
@@ -686,6 +712,7 @@ Can you:
 ### Issue: Multi-Step Task Incomplete
 
 **Solution**: Break it into separate prompts
+
 ```
 ❌ "Implement the feature"
 
@@ -716,6 +743,7 @@ Can you:
 ## Questions?
 
 If you're stuck:
+
 1. Check the relevant agent documentation (`.copilot/agents/`)
 2. Ask the **Orchestrator** for guidance on workflow
 3. Ask the **Developer** for implementation help

@@ -17,6 +17,7 @@ See `SCAFFOLDING_COMPLETE.md` for detailed structure.
 **Status**: Updated to reflect full monorepo structure
 
 #### Changes Made
+
 - Added environment variables for consistency (PNPM_VERSION, NODE_VERSION)
 - Added concurrency settings to prevent duplicate runs
 - Split into specialized jobs:
@@ -30,6 +31,7 @@ See `SCAFFOLDING_COMPLETE.md` for detailed structure.
   - `all-checks-pass` — Final gate to ensure all pass
 
 #### Workflow Stages
+
 ```
 1. Lint & Format Check ──┐
 2. Type Check ───────────┼──→ Build ──→ Test ──→ All Pass
@@ -39,6 +41,7 @@ See `SCAFFOLDING_COMPLETE.md` for detailed structure.
 ```
 
 #### Key Features
+
 - ✅ Parallel jobs for faster CI
 - ✅ Dependency tracking (job dependencies)
 - ✅ Build artifacts upload (for later stages if needed)
@@ -52,13 +55,16 @@ See `SCAFFOLDING_COMPLETE.md` for detailed structure.
 **Status**: Created for automated PR review
 
 #### Purpose
+
 For a solo developer with AI agents, this workflow:
+
 - Automatically approves PRs created by personal account (`pluto-atom-4`)
 - Ensures only personal PRs get auto-approval (security gate)
 - Skips draft PRs
 - Adds approval comment when conditions met
 
 #### Security Gate
+
 ```yaml
 if: github.actor == 'pluto-atom-4' && github.event.pull_request.draft == false
 ```
@@ -66,6 +72,7 @@ if: github.actor == 'pluto-atom-4' && github.event.pull_request.draft == false
 Only PRs created by the personal account are auto-approved.
 
 #### Workflow Flow
+
 ```
 PR Created
   ↓ (only if actor == 'pluto-atom-4')
@@ -84,6 +91,7 @@ Ready for Manual Merge
 **Status**: Created to guide agent-driven development
 
 #### Sections
+
 - **Description**: What this PR accomplishes
 - **Type of Change**: Bug fix, feature, config, docs, refactoring
 - **Which Practice Area**: Identifies scope (P1/P2/P3)
@@ -97,6 +105,7 @@ Ready for Manual Merge
 - **Merge Strategy**: Squash and merge
 
 #### Purpose
+
 Helps maintain consistency and ensures PR descriptions reference the agent workflow.
 
 ---
@@ -106,17 +115,21 @@ Helps maintain consistency and ensures PR descriptions reference the agent workf
 **Status**: Created for automated dependency management
 
 #### Update Schedule
+
 - **npm packages**: Weekly (Monday 03:00 UTC)
 - **GitHub Actions**: Weekly (Monday 04:00 UTC)
 - **Max open PRs**: 5 for npm, 3 for Actions
 
 #### Pinned Dependencies
+
 To prevent breaking changes:
+
 - `pnpm` — Critical for monorepo
 - `@temporalio/*` — Core workflow dependencies
 - `node` — Runtime version
 
 #### Ignored
+
 Dependencies intentionally excluded from auto-updates (if any).
 
 ---
@@ -228,14 +241,14 @@ NODE_VERSION: 20
 
 ## Files Updated/Created
 
-| File | Status | Purpose |
-|------|--------|---------|
-| `.github/workflows/ci.yml` | ✅ Updated | Main CI/CD pipeline |
-| `.github/workflows/ai-review.yml` | ✅ Created | Automated PR approval for solo dev |
-| `.github/pull_request_template.md` | ✅ Created | PR description guide |
-| `.github/dependabot.yml` | ✅ Created | Automated dependency updates |
-| `.github/README.md` | ✅ Created | Configuration documentation |
-| `.github/ISSUE_TEMPLATE/` | ✅ Created | Directory for issue templates |
+| File                               | Status     | Purpose                            |
+| ---------------------------------- | ---------- | ---------------------------------- |
+| `.github/workflows/ci.yml`         | ✅ Updated | Main CI/CD pipeline                |
+| `.github/workflows/ai-review.yml`  | ✅ Created | Automated PR approval for solo dev |
+| `.github/pull_request_template.md` | ✅ Created | PR description guide               |
+| `.github/dependabot.yml`           | ✅ Created | Automated dependency updates       |
+| `.github/README.md`                | ✅ Created | Configuration documentation        |
+| `.github/ISSUE_TEMPLATE/`          | ✅ Created | Directory for issue templates      |
 
 ---
 
@@ -252,6 +265,7 @@ NODE_VERSION: 20
 ## Configuration Commands
 
 View the workflows:
+
 ```bash
 # List workflows
 ls -la .github/workflows/
@@ -261,6 +275,7 @@ cat .github/workflows/ci.yml
 ```
 
 Test locally (optional):
+
 ```bash
 # Run act (GitHub Actions local runner)
 act --list
@@ -286,6 +301,7 @@ These configurations demonstrate:
 ✅ **Scalability**: Infrastructure for Kubernetes deployment (manifests in `infra/`)
 
 When discussing your interview project, you can reference:
+
 - "Turborepo ensures codegen runs before type-check, preventing CI bugs"
 - "GitHub Actions automates quality checks across monorepo"
 - "Workflow coordinates three independent practices seamlessly"
@@ -295,6 +311,7 @@ When discussing your interview project, you can reference:
 ## Support
 
 For questions on GitHub Actions:
+
 - See `.github/README.md`
 - See workflows in `.github/workflows/`
 - See PR template in `.github/pull_request_template.md`

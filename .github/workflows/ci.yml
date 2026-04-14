@@ -140,6 +140,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build shared dependencies
+        run: pnpm --filter @boltline/shared-types build
+
       - name: Build Practice 1
         run: pnpm --filter @boltline/practice-temporal-kafka build
 
@@ -164,6 +167,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build shared dependencies
+        run: pnpm --filter @boltline/shared-types build
 
       - name: Build Practice 3 Next.js
         run: pnpm --filter @boltline/practice-nextjs-graphql build

@@ -5,8 +5,9 @@
 This is a **practice playground** for a **Senior Full Stack Software Developer** interview at **Stoke Space** for their Boltline platform.
 
 **Position Details:**
-- Role: Senior Full Stack Software Developer  
-- Company: Stoke Space  
+
+- Role: Senior Full Stack Software Developer
+- Company: Stoke Space
 - Platform: Boltline (cloud-based Iterative Hardware Engineering platform)
 
 ## What is Boltline?
@@ -20,14 +21,14 @@ Boltline is a commercial SaaS product designed to help hardware teams (aerospace
 
 ## Core Tech Stack
 
-| Component | Technology |
-|-----------|-----------|
-| Frontend | React, TypeScript, Next.js |
-| Backend/Data | GraphQL APIs, PostgreSQL |
-| Workflow Orchestration | Temporal |
-| Event Streaming | Apache Kafka |
-| CI/CD | GitHub Actions, CircleCI |
-| Infrastructure | AWS, ECS, Docker |
+| Component              | Technology                 |
+| ---------------------- | -------------------------- |
+| Frontend               | React, TypeScript, Next.js |
+| Backend/Data           | GraphQL APIs, PostgreSQL   |
+| Workflow Orchestration | Temporal                   |
+| Event Streaming        | Apache Kafka               |
+| CI/CD                  | GitHub Actions, CircleCI   |
+| Infrastructure         | AWS, ECS, Docker           |
 
 ## Key Interview Themes
 
@@ -40,6 +41,7 @@ Boltline is a commercial SaaS product designed to help hardware teams (aerospace
 ## Your Preparation Goals
 
 This playground lets you practice:
+
 1. Building mini full-stack systems (React + GraphQL backend) in 60-120 minutes
 2. Understanding framework interactions (Hasura, Temporal, Kafka)
 3. Designing reliable, real-time systems for physical processes

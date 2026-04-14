@@ -1,14 +1,14 @@
 import Link from "next/link";
 
-export default function Home(): JSX.Element {
+export default function Home(): React.ReactElement {
   return (
     <main className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800">
       <div className="container mx-auto px-4 py-20">
         <div className="max-w-2xl mx-auto text-center text-white">
           <h1 className="text-5xl font-bold mb-6">Boltline Work Plans</h1>
           <p className="text-xl mb-12 opacity-90">
-            Interview practice application for Stoke Space. Demonstrating Temporal, Kafka,
-            Hasura GraphQL, and Next.js integration.
+            Interview practice application for Stoke Space. Demonstrating Temporal, Kafka, Hasura
+            GraphQL, and Next.js integration.
           </p>
 
           <div className="space-y-4">
@@ -37,9 +37,7 @@ export default function Home(): JSX.Element {
 
             <div className="bg-white bg-opacity-10 backdrop-blur-md p-6 rounded-lg">
               <h3 className="text-lg font-semibold mb-2">Server Components</h3>
-              <p className="opacity-80">
-                Next.js server components for fast initial data loading
-              </p>
+              <p className="opacity-80">Next.js server components for fast initial data loading</p>
             </div>
           </div>
         </div>

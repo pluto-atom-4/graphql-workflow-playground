@@ -57,13 +57,15 @@ graphql-workflow-playground/
 **Goal**: Simulate an "Order Fulfillment" process where reliability and state management are paramount.
 
 **Key Concepts**:
+
 - **Durable Execution**: Temporal maintains workflow state across system failures
 - **Retries**: Configure activities with exponential backoff for transient failures
 - **Event-Driven Messaging**: Kafka acts as the event backbone for async communication
 
 **Example Workflow**:
+
 ```
-Order Received 
+Order Received
   → ValidateOrder (immediate)
   → ReserveInventory (with 3 retries)
   → EmitKafkaEvent (publish shipment-events)
@@ -71,6 +73,7 @@ Order Received
 ```
 
 **What to Practice**:
+
 1. Define a `ShipmentWorkflow` that orchestrates three activities
 2. Add retry policies to handle database failures gracefully
 3. Emit Kafka events when workflow reaches validated state
@@ -83,16 +86,19 @@ Order Received
 **Goal**: Build a relational schema for inventory and orders with real-time subscriptions.
 
 **Core Entities**:
+
 - **Parts**: `id`, `name`, `sku`
 - **Inventory**: `part_id`, `quantity`, `location`
 - **Orders**: `id`, `part_id`, `status`
 
 **Key Patterns**:
+
 - **Foreign Key Relationships**: Track Orders → Parts via part_id
 - **Real-time Subscriptions**: Listen for Inventory changes instantly
 - **Custom Business Logic**: Hasura Actions for webhook-backed validation
 
 **What to Practice**:
+
 1. Design PostgreSQL schema with proper constraints
 2. Connect Hasura and track relationships in the console
 3. Write a GraphQL subscription to observe inventory updates
@@ -105,12 +111,14 @@ Order Received
 **Goal**: Build a shop-floor UI where technicians follow digital instructions and log data in real-time.
 
 **Key Features**:
+
 - **Dynamic Rendering**: Fetch work plan steps using GraphQL queries
 - **Server Components**: Initial load via Next.js server-side rendering
 - **Client Components**: Interactive buttons and forms
 - **Optimistic Updates**: Show "Checkmark" instantly before database confirms
 
 **UI Flow**:
+
 ```
 Work Plan Overview
   ↓ (click a plan)
@@ -125,18 +133,19 @@ Work Plan Overview
 ```
 
 **Apollo Client Patterns**:
+
 ```typescript
-const { data, loading } = useQuery(GET_WORK_PLAN_STEPS, { 
-  variables: { workPlanId } 
+const { data, loading } = useQuery(GET_WORK_PLAN_STEPS, {
+  variables: { workPlanId },
 });
 
 const [completeStep] = useMutation(COMPLETE_STEP, {
   optimisticResponse: {
-    completeStep: { id, status: "COMPLETED" }
+    completeStep: { id, status: "COMPLETED" },
   },
   update: (cache, { data }) => {
     // Update local cache
-  }
+  },
 });
 ```
 
@@ -147,16 +156,19 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 ### Before Your Interview
 
 **Checkpoint 1: Temporal Mastery**
+
 - [ ] Run a Temporal workflow locally
 - [ ] Trigger a worker failure and observe recovery
 - [ ] Explain retry policies and why they matter for manufacturing workflows
 
 **Checkpoint 2: GraphQL Real-time Data**
+
 - [ ] Create a GraphQL subscription and observe live updates
 - [ ] Write a custom Hasura Action and test it via GraphQL
 - [ ] Explain how this pattern keeps technicians seeing live inventory
 
 **Checkpoint 3: Next.js Fullstack**
+
 - [ ] Build a server component that fetches from GraphQL
 - [ ] Implement optimistic UI updates in Apollo Client
 - [ ] Explain how technicians see instant feedback even if the network is slow
@@ -164,6 +176,7 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 **During Your Interview**
 
 When discussing architecture, mention:
+
 - **"Temporal ensures workflow state is preserved—if a technician's tablet dies mid-step, the Work Plan recovers safely"**
 - **"Kafka acts as our event backbone, ensuring all services stay in sync asynchronously"**
 - **"Hasura's real-time subscriptions let technicians see live inventory changes on the shop floor"**
@@ -173,13 +186,13 @@ When discussing architecture, mention:
 
 ## Technology Rationale
 
-| Framework | Why It Matters for Boltline |
-|-----------|-----|
-| **Hasura/GraphQL** | Rapidly auto-generate CRUD endpoints and subscriptions without boilerplate |
-| **Temporal** | Ensure complex multi-day manufacturing steps complete reliably even if services fail |
-| **Kafka** | Stream high-volume manufacturing sensor data without blocking synchronous APIs |
-| **Next.js** | Server-side rendering for fast initial load, client-side hydration for interactivity |
-| **Apollo Client** | Local caching and optimistic updates keep technicians productive even on spotty shop floor WiFi |
+| Framework          | Why It Matters for Boltline                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| **Hasura/GraphQL** | Rapidly auto-generate CRUD endpoints and subscriptions without boilerplate                      |
+| **Temporal**       | Ensure complex multi-day manufacturing steps complete reliably even if services fail            |
+| **Kafka**          | Stream high-volume manufacturing sensor data without blocking synchronous APIs                  |
+| **Next.js**        | Server-side rendering for fast initial load, client-side hydration for interactivity            |
+| **Apollo Client**  | Local caching and optimistic updates keep technicians productive even on spotty shop floor WiFi |
 
 ---
 

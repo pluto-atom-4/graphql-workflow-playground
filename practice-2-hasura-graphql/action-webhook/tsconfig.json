@@ -1,6 +1,7 @@
 {
-  "extends": "@boltline/tsconfig/node.json",
+  "extends": "../../packages/tsconfig/node.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "module": "ESNext",
     "target": "ES2022",
     "rootDir": "src",

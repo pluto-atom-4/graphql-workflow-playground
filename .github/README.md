@@ -1,4 +1,5 @@
 # GitHub Configuration
+
 This directory contains GitHub-specific configurations for the graphql-workflow-playground project.
 
 ## Files

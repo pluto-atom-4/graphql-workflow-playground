@@ -15,11 +15,7 @@ app.get("/health", (_req: Request, res: Response): void => {
 });
 
 // Hasura Action: placeOrder
-app.post(
-  "/actions/place-order",
-  validateWebhookSecret,
-  handlePlaceOrder
-);
+app.post("/actions/place-order", validateWebhookSecret, handlePlaceOrder);
 
 // Error handling
 app.use(errorMiddleware);

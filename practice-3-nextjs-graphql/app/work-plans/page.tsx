@@ -1,4 +1,4 @@
-export default function WorkPlansPage(): JSX.Element {
+export default function WorkPlansPage(): React.ReactElement {
   return (
     <main className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
@@ -29,8 +29,8 @@ export default function WorkPlansPage(): JSX.Element {
             <h3 className="text-lg font-semibold mb-2">📝 About This Page</h3>
             <p className="text-gray-700">
               This page demonstrates a Server Component that fetches work plan data from Hasura
-              GraphQL. In a production app, this would query real data and display technician
-              work plans for the shop floor.
+              GraphQL. In a production app, this would query real data and display technician work
+              plans for the shop floor.
             </p>
           </div>
         </div>

@@ -25,7 +25,9 @@ async function main(): Promise<void> {
 
     console.log("✓ Workflow completed:");
     console.log(`  Result: ${result}`);
-    console.log(`  View workflow in Temporal UI: http://localhost:8088/namespaces/${temporalConfig.namespace}/workflows/${order.orderId}`);
+    console.log(
+      `  View workflow in Temporal UI: http://localhost:8088/namespaces/${temporalConfig.namespace}/workflows/${order.orderId}`
+    );
   } catch (error) {
     console.error("✗ Workflow failed:", error);
   } finally {

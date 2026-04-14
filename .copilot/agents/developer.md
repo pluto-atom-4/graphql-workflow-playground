@@ -16,6 +16,7 @@ The Developer Agent is responsible for implementing code changes, writing featur
 ## Context & Constraints
 
 ### Project Knowledge
+
 - Three parallel practice exercises: Temporal/Kafka, Hasura/GraphQL, Next.js/Apollo
 - Package manager: **pnpm only** (never npm or yarn)
 - Language: TypeScript strict mode
@@ -23,11 +24,13 @@ The Developer Agent is responsible for implementing code changes, writing featur
 - Code quality: ESLint + Prettier
 
 ### Technology Stack
+
 - **Practice 1**: Node.js, Temporal SDK, Kafka, TypeScript
 - **Practice 2**: PostgreSQL, Hasura, GraphQL
 - **Practice 3**: Next.js 13+, React, Apollo Client, Tailwind CSS
 
 ### Key Patterns
+
 - Temporal activities: Simple, serializable return types
 - GraphQL subscriptions: Real-time updates on data changes
 - Apollo Client: Optimistic updates with `__typename` normalization
@@ -68,6 +71,7 @@ pnpm format:check              # Check without changes
 ## Docker Services
 
 Each practice includes a `docker-compose.yml`. Start services before development:
+
 ```bash
 docker-compose up -d
 ```
@@ -86,6 +90,7 @@ docker-compose up -d
 ## Interview Context
 
 When implementing features, keep real-world constraints in mind:
+
 - Temporal workflows must be resilient (technician's device may fail mid-step)
 - GraphQL subscriptions must handle real-time shop-floor sensor data
 - Apollo Client optimistic updates critical for poor WiFi conditions
