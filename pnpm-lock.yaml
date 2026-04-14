@@ -141,6 +141,9 @@ importers:
       '@apollo/client':
         specifier: ^3.9.0
         version: 3.14.1(@types/react@18.3.28)(graphql-ws@6.0.8(graphql@16.13.2)(ws@8.20.0))(graphql@16.13.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@boltline/shared-types':
+        specifier: workspace:*
+        version: link:../packages/shared-types
       graphql:
         specifier: ^16.8.1
         version: 16.13.2
