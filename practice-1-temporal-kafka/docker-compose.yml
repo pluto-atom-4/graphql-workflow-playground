@@ -1,5 +1,3 @@
-version: "3.9"
-
 # Includes shared infra (Postgres, Hasura, Kafka, Temporal)
 include:
   - path: ../infra/docker/docker-compose.shared.yml

@@ -34,7 +34,7 @@ CREATE INDEX idx_orders_part_id ON public.orders(part_id);
 CREATE INDEX idx_orders_status ON public.orders(status);
 CREATE INDEX idx_orders_created_at ON public.orders(created_at DESC);
 
--- Enable NOTIFY for real-time subscriptions
-ALTER TABLE public.inventory ENABLE REPLICA IDENTITY FULL;
-ALTER TABLE public.orders ENABLE REPLICA IDENTITY FULL;
-ALTER TABLE public.parts ENABLE REPLICA IDENTITY FULL;
+-- Enable REPLICA IDENTITY for real-time subscriptions (Hasura requirement)
+ALTER TABLE public.inventory REPLICA IDENTITY FULL;
+ALTER TABLE public.orders REPLICA IDENTITY FULL;
+ALTER TABLE public.parts REPLICA IDENTITY FULL;
