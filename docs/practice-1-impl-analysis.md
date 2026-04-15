@@ -397,13 +397,269 @@ if (!validation.valid) {
 
 ---
 
+---
+
+## 12. Strategic Recommendation: Documentation vs. Implementation Refactor
+
+After analyzing resource requirements and cross-practice dependencies, here's a strategic assessment:
+
+### Current State Analysis
+
+| Practice | Implementation Status | Documentation Status | Tests | README | Cross-Practice Ready? |
+| --- | --- | --- | --- | --- | --- |
+| **1: Temporal** | 75% Complete | 100% (but misaligned) | 9% (1/11 files) | ❌ None | ⚠️ Partial |
+| **2: Hasura** | 60% Complete | 100% | ~0% | ❌ None | ✅ Yes |
+| **3: Next.js** | 70% Complete | 100% | ~5% | ❌ None | ⚠️ Partial |
+
+### Resource Requirements Analysis
+
+#### Option A: Update Documentation Only
+**Effort**: 8–12 hours  
+**Scope**:
+- Fix script names across all guides (dev, dev:worker, dev:client)
+- Correct port references (8080 vs 8088 for Temporal UI)
+- Update test directory structure references (tests/ → __tests__/unit/)
+- Add cross-practice integration chapter explaining Kafka → GraphQL → UI flow
+- Create architecture diagram showing Practice 1→2→3 data dependencies
+- Add READMEs for each practice folder
+
+**Pros**:
+- Fast turnaround
+- Implementation stays stable (less risk of regressions)
+- Can be done in parallel with development
+
+**Cons**:
+- Leaves testing incomplete (critical for interview prep)
+- Implementation remains more complex than documented
+- Config patterns unexplained
+- Cross-practice data flow still unclear to users
+
+#### Option B: Refactor Implementation Only
+**Effort**: 16–24 hours  
+**Scope**:
+- Flatten directory structure: `src/temporal/activities/` → `src/activities/`
+- Rename entry points: `starter.ts` → `client.ts`
+- Create npm scripts aliases: add `dev:worker`, `dev:client`
+- Add missing test files (workflows.test.ts, kafka.test.ts)
+- Consolidate config logic
+- Align Temporal UI port reference (8080)
+- Add Kafka consumer example for Practice 2 integration
+- Add comprehensive JSDoc comments
+
+**Pros**:
+- Implementation matches guide exactly
+- Simpler structure for learning
+- Testing becomes complete
+- Better aligns with interview talking points
+
+**Cons**:
+- Higher risk (refactoring core workflow files)
+- Requires regression testing across all three practices
+- Longer time to completion
+- May need schema/API adjustments in Practice 2
+
+#### Option C: Hybrid Approach (Recommended) ⭐
+**Effort**: 20–28 hours  
+**Scope**:
+
+**Phase 1: Documentation (6–8 hours)**
+- Fix critical mismatches (script names, ports, test structure)
+- Add cross-practice integration chapter
+- Create data flow diagrams
+- Add READMEs to each practice
+
+**Phase 2: Implementation Refactor (12–16 hours)**
+- Flatten directory structure for clarity
+- Add missing tests (workflows, kafka)
+- Create npm script aliases for compatibility
+- Add Kafka→GraphQL bridge documentation
+- Implement consumer pattern example
+
+**Phase 3: Validation (2–4 hours)**
+- Verify all three practices work end-to-end
+- Run full test suite
+- Update interview talking points
+- Final documentation review
+
+**Pros**:
+- ✅ Both documentation and implementation align
+- ✅ Interview prep strengthened (full testing, clear architecture)
+- ✅ Users can follow guide without deviation
+- ✅ Code quality improved without major risk
+- ✅ Cross-practice integration becomes explicit
+
+**Cons**:
+- Longest timeline
+- Requires most coordination
+
+---
+
+### Recommendation: **Proceed with Option C (Hybrid)**
+
+**Justification**:
+
+1. **Interview Context**: Stoke Space will test both implementation quality AND ability to explain architecture. Fixing documentation alone leaves explanation gaps; refactoring alone leaves guide-following issues.
+
+2. **Teaching Value**: This is a practice playground. Users following the guide exactly should succeed; implementation should match documentation.
+
+3. **Quality**: With only 2 test files across the project, testing is a critical gap for demonstrating reliability—core to Temporal interview talking point.
+
+4. **Cross-Practice Integration**: Currently undefined. Hybrid approach forces clarity on how Kafka events propagate to GraphQL subscriptions.
+
+5. **Effort Justification**: 20–28 hours is ~3–4 days of focused work; interview prep value far exceeds this investment.
+
+---
+
+### Implementation Roadmap (Option C Phases)
+
+#### Phase 1: Documentation Alignment (6–8 hours)
+
+**1.1 Fix Script Names** (1 hour)
+- Update practice-1 guide: `pnpm dev:worker` → `pnpm dev`, add `pnpm start:starter`
+- Verify Practice 2 & 3 scripts match their actual package.json
+- Add script reference table to all guides
+
+**1.2 Fix Infrastructure & Ports** (1.5 hours)
+- Correct Temporal UI port: 8080 vs 8088 (verify actual port in docker-compose.shared.yml)
+- Document shared infrastructure location (`../infra/docker-compose.shared.yml`)
+- Add port reference table
+
+**1.3 Add Cross-Practice Integration** (2 hours)
+- Create "Integration Architecture" section in all three guides
+- Show data flow: Practice 1 (Temporal) → Kafka → Practice 2 (GraphQL) → Practice 3 (Apollo)
+- Add example: "Order Fulfillment Flow" spanning all three
+- Document how Kafka messages trigger GraphQL mutations/subscriptions
+
+**1.4 Add READMEs** (1.5 hours)
+- Create `practice-1-temporal-kafka/README.md` (quick start)
+- Create `practice-2-hasura-graphql/README.md` (schema overview)
+- Create `practice-3-nextjs-graphql/README.md` (component structure)
+
+**1.5 Update practice-1-impl-analysis.md** (2 hours)
+- Add "Recommended Action Plan" with phased approach
+- Create checklist for each phase
+- Document success metrics
+
+#### Phase 2: Implementation Refactor (12–16 hours)
+
+**2.1 Directory Structure** (3 hours)
+- Move `src/temporal/activities/` → `src/activities/`
+- Move `src/temporal/workflows/` → `src/workflows/`
+- Move config to `src/config/` (already done, keep)
+- Move client to `src/client.ts` (rename from starter.ts)
+- Update all imports and tests
+
+**2.2 npm Scripts** (1 hour)
+- Add `dev:worker` alias: `"dev:worker": "pnpm dev"`
+- Add `dev:client` script: `"dev:client": "tsx src/client.ts"`
+- Ensure all scripts match guide references
+
+**2.3 Missing Tests** (6–8 hours)
+- Write `__tests__/unit/reserve-inventory.test.ts` (activity unit test)
+- Write `__tests__/unit/emit-kafka-event.test.ts` (activity unit test)
+- Write `__tests__/integration/shipment-workflow.test.ts` (workflow integration test using TestWorkflowEnvironment)
+- Write `__tests__/integration/kafka-integration.test.ts` (verify event emission)
+- Achieve 70%+ coverage threshold
+
+**2.4 Code Quality** (2 hours)
+- Add JSDoc comments to all activities
+- Add JSDoc to workflows
+- Ensure TypeScript strict mode compliance
+- Run linter and fix issues
+
+**2.5 Cross-Practice Bridge** (1–2 hours)
+- Add Kafka consumer example (not required, but helpful)
+- Document how Kafka events would trigger GraphQL mutations (pseudo-code)
+- Add example payload structures
+
+#### Phase 3: Validation & Final Polish (2–4 hours)
+
+**3.1 End-to-End Testing** (1 hour)
+- Verify Practice 1 workflow executes end-to-end
+- Verify Kafka events publish correctly
+- Verify Temporal UI is accessible and shows workflow
+
+**3.2 Documentation Verification** (1 hour)
+- Follow guide exactly as written; verify all commands work
+- Test all script aliases
+- Verify port references are correct
+
+**3.3 Cross-Practice Validation** (1 hour)
+- Verify Practice 1 Kafka events could feed Practice 2
+- Verify Practice 2 GraphQL schema is ready for Practice 3
+- Verify Practice 3 components can consume Practice 2 API
+
+**3.4 Interview Preparation** (1 hour)
+- Update "Interview Talking Points" in each guide
+- Add specific metrics (test coverage, lines of code, performance)
+- Create cheat sheet for demo scenarios
+
+---
+
+### Success Criteria (Option C)
+
+After completion, the project should satisfy:
+
+- [ ] All npm scripts in guides match actual package.json
+- [ ] All ports referenced are verified (Temporal UI, Hasura, Next.js)
+- [ ] Test structure matches guide expectations
+- [ ] Directory structure matches guide references
+- [ ] Cross-practice data flow documented
+- [ ] Each practice has a README
+- [ ] Test coverage ≥70% for Practice 1
+- [ ] All three practices work end-to-end
+- [ ] User can follow any guide and succeed without deviation
+- [ ] Interview talking points are reinforced in implementation
+
+---
+
+### Alternative: Fast-Track Option (10–12 hours)
+
+If time is limited, focus on **highest-impact items**:
+
+1. **Fix script names** (1 hour) — Unblocks users following guide
+2. **Correct port references** (0.5 hours) — Unblocks Temporal UI debugging
+3. **Add integration tests** (6 hours) — Enables reliability talking point
+4. **Create Practice 1 README** (1 hour) — Quick-start documentation
+5. **Update cross-practice data flow** (1.5 hours) — Clarifies architecture
+
+**Time**: 10–12 hours  
+**Impact**: 70% of Option C benefits, 40% of the effort
+
+---
+
 ## Conclusion
 
-The implementation is **production-ready in core functionality** (Temporal workflows, Kafka integration, activity patterns) but **documentation and testing are incomplete**. The guide is excellent for learning but diverges from actual implementation in critical areas (script names, ports, test structure).
+The implementation is **production-ready in core functionality** but **documentation and testing gaps undermine interview readiness**. 
 
-**Recommendation for Interview Context**: 
-- Be prepared to explain why implementation differs from guide
-- Highlight improvements made (config externalization, granular timeouts, activity-level Kafka emission)
-- Acknowledge gaps (missing tests, unclear cross-practice integration) as opportunities
-- Use this analysis to strengthen discussion of reliability and observability
+**Strategic Recommendation**: Proceed with **Option C (Hybrid)** for strongest interview preparation. The 20–28 hour investment pays dividends through:
+- Clear alignment between documentation and implementation
+- Strong testing story (critical for Temporal reliability narrative)
+- Explicit cross-practice integration (shows architectural thinking)
+- Polished learning experience for future users
+
+If timeline is tight, pursue **Fast-Track Option** (10–12 hours) for immediate impact.
+
+---
+
+## Action Items
+
+### Immediate (Next Session)
+1. Verify actual Temporal UI port (8080 or 8088)
+2. Confirm shared infrastructure path in docker-compose.shared.yml
+3. Decide between Option A, B, C, or Fast-Track
+4. Create task breakdown in SQL or Markdown
+
+### If Proceeding with Refactor
+1. Create feature branch: `refactor/practice-1-alignment`
+2. Phase 1: Documentation updates (6–8 hours)
+3. Phase 2: Implementation refactor (12–16 hours)
+4. Phase 3: Validation (2–4 hours)
+5. Create PR with testing evidence
+
+### Success Metrics Post-Completion
+- All guides successfully followed with zero deviation
+- Test coverage ≥70% across practices
+- Cross-practice integration explicitly documented
+- Interview talking points reinforced in code examples
 
