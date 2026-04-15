@@ -3,6 +3,7 @@
 ## Overview
 
 In this exercise, you'll build a **real-time GraphQL API** using Hasura and PostgreSQL. You'll learn how to:
+
 - Design a relational schema for hardware workflows
 - Leverage Hasura's auto-generated CRUD operations
 - Set up GraphQL subscriptions for real-time updates
@@ -19,6 +20,7 @@ In this exercise, you'll build a **real-time GraphQL API** using Hasura and Post
 ## Prerequisites
 
 Before starting, ensure you have:
+
 - Docker & Docker Compose installed
 - GraphQL IDE installed (GraphiQL or Insomnia)
 - Basic SQL knowledge
@@ -37,12 +39,14 @@ docker-compose up -d
 ```
 
 **What this does**:
+
 - Starts a **PostgreSQL database** for your schema
 - Starts a **Hasura GraphQL Engine** that auto-generates a GraphQL API
 - Exposes GraphQL at `http://localhost:8080/graphql`
 - Exposes Hasura console at `http://localhost:8080`
 
 **Verify services**:
+
 ```bash
 docker-compose ps
 ```
@@ -60,6 +64,7 @@ http://localhost:8080
 ```
 
 You'll see:
+
 - **API Explorer** (left): Interactive GraphQL playground
 - **Data** (top menu): Table creation and schema management
 - **SQL** (top menu): Direct SQL execution
@@ -122,13 +127,13 @@ In the Hasura console, go to **Data** > **Create Table**.
 
 Create the **Part** table:
 
-| Column | Type | Constraints |
-|--------|------|-------------|
-| id | UUID | Primary Key, Default: gen_random_uuid() |
-| sku | String | Unique |
-| name | String | Not null |
-| description | Text | Nullable |
-| created_at | Timestamp | Default: now() |
+| Column      | Type      | Constraints                             |
+| ----------- | --------- | --------------------------------------- |
+| id          | UUID      | Primary Key, Default: gen_random_uuid() |
+| sku         | String    | Unique                                  |
+| name        | String    | Not null                                |
+| description | Text      | Nullable                                |
+| created_at  | Timestamp | Default: now()                          |
 
 After creating, click **Create Table**.
 
@@ -190,17 +195,21 @@ Repeat the process for:
 Once all tables are created, Hasura needs to know about relationships. Go to **Data** > **[Table Name]** > **Relationships**.
 
 For **OrderItem**, add relationships:
+
 - **order** (many-to-one): `order_id` → `order(id)`
 - **part** (many-to-one): `part_id` → `part(id)`
 
 For **Inventory**, add:
+
 - **part** (many-to-one): `part_id` → `part(id)`
 
 For **WorkPlan**, add:
+
 - **order** (many-to-one): `order_id` → `order(id)`
 - **work_steps** (one-to-many): `id` ← `work_step.work_plan_id`
 
 For **WorkStep**, add:
+
 - **work_plan** (many-to-one): `work_plan_id` → `work_plan(id)`
 
 ---
@@ -230,11 +239,9 @@ In the API Explorer, run a mutation to insert a part:
 
 ```graphql
 mutation CreatePart {
-  insert_part_one(object: {
-    sku: "PART-001"
-    name: "Fastener Kit"
-    description: "M6 bolts and washers"
-  }) {
+  insert_part_one(
+    object: { sku: "PART-001", name: "Fastener Kit", description: "M6 bolts and washers" }
+  ) {
     id
     sku
     name
@@ -254,17 +261,19 @@ Create an order and its items in one mutation:
 
 ```graphql
 mutation CreateOrderWithItems {
-  insert_order_one(object: {
-    customer_id: "CUST-123"
-    total_amount: 2500
-    status: "pending"
-    order_items: {
-      data: [
-        { part_id: "PART-UUID-1", quantity: 5, unit_price: 100 }
-        { part_id: "PART-UUID-2", quantity: 10, unit_price: 250 }
-      ]
+  insert_order_one(
+    object: {
+      customer_id: "CUST-123"
+      total_amount: 2500
+      status: "pending"
+      order_items: {
+        data: [
+          { part_id: "PART-UUID-1", quantity: 5, unit_price: 100 }
+          { part_id: "PART-UUID-2", quantity: 10, unit_price: 250 }
+        ]
+      }
     }
-  }) {
+  ) {
     id
     customer_id
     total_amount
@@ -309,12 +318,14 @@ Custom Actions let you implement business logic (like validation) that the auto-
 Go to **Actions** > **Create** and create an action called `ValidateOrder`:
 
 **Action Definition**:
+
 ```
 GraphQL Type: Mutation
 Handler: Webhook
 ```
 
 **Inputs**:
+
 ```graphql
 input ValidateOrderInput {
   order_id: uuid!
@@ -322,6 +333,7 @@ input ValidateOrderInput {
 ```
 
 **Output**:
+
 ```graphql
 type ValidateOrderPayload {
   success: Boolean!
@@ -339,12 +351,12 @@ type ValidateOrderPayload {
 In your backend (Node.js with Express), handle the webhook:
 
 ```typescript
-import express, { Request, Response } from 'express';
+import express, { Request, Response } from "express";
 
 const app = express();
 app.use(express.json());
 
-app.post('/validate-order', async (req: Request, res: Response) => {
+app.post("/validate-order", async (req: Request, res: Response) => {
   const { input } = req.body;
   const { order_id } = input;
 
@@ -362,7 +374,7 @@ app.post('/validate-order', async (req: Request, res: Response) => {
         }
       }
     `;
-    
+
     // Validate: ensure total_amount equals sum of items
     const order = await fetchFromHasura(query);
     const itemsTotal = order.order_items.reduce(
@@ -373,7 +385,7 @@ app.post('/validate-order', async (req: Request, res: Response) => {
     if (order.total_amount !== itemsTotal) {
       return res.json({
         success: false,
-        message: 'Order total does not match item sum',
+        message: "Order total does not match item sum",
         order_id,
       });
     }
@@ -391,7 +403,7 @@ app.post('/validate-order', async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      message: 'Order validated successfully',
+      message: "Order validated successfully",
       order_id,
     });
   } catch (error) {
@@ -403,7 +415,7 @@ app.post('/validate-order', async (req: Request, res: Response) => {
   }
 });
 
-app.listen(3000, () => console.log('Server running on port 3000'));
+app.listen(3000, () => console.log("Server running on port 3000"));
 ```
 
 ---
@@ -433,6 +445,7 @@ Hasura can enforce permissions at the row level. Go to **Data** > **[Table]** > 
 For the **WorkPlan** table, create a role `technician`:
 
 **Select Permission** (read access):
+
 ```
 With custom check:
 { "technician_id": { "_eq": "X-Hasura-User-Id" } }
@@ -441,11 +454,13 @@ With custom check:
 This means technicians can only see work plans assigned to them (from the `X-Hasura-User-Id` header).
 
 For **Insert Permission**, allow only:
+
 ```json
 { "X-Hasura-User-Id": { "_eq": "X-Hasura-User-Id" } }
 ```
 
 Now pass the header with each request:
+
 ```bash
 curl -H "X-Hasura-User-Id: tech-456" \
   -H "X-Hasura-Role: technician" \
@@ -469,7 +484,7 @@ INSERT INTO part (sku, name, description) VALUES
   ('PART-003', 'Control Module', 'PCB with firmware');
 
 -- Insert inventory
-INSERT INTO inventory (part_id, quantity, warehouse_location) 
+INSERT INTO inventory (part_id, quantity, warehouse_location)
 SELECT id, 100, 'Bin A-1' FROM part WHERE sku = 'PART-001'
 UNION ALL
 SELECT id, 50, 'Bin A-2' FROM part WHERE sku = 'PART-002'
@@ -482,12 +497,12 @@ INSERT INTO "order" (customer_id, total_amount, status) VALUES
 
 -- Insert order items
 INSERT INTO order_item (order_id, part_id, quantity, unit_price)
-SELECT 
+SELECT
   (SELECT id FROM "order" WHERE customer_id = 'CUST-001' LIMIT 1),
   (SELECT id FROM part WHERE sku = 'PART-001'),
   5, 100
 UNION ALL
-SELECT 
+SELECT
   (SELECT id FROM "order" WHERE customer_id = 'CUST-001' LIMIT 1),
   (SELECT id FROM part WHERE sku = 'PART-002'),
   3, 250;
@@ -546,6 +561,7 @@ subscription WatchWorkPlan($workPlanId: uuid!) {
 ```
 
 Variables:
+
 ```json
 {
   "workPlanId": "WORK-PLAN-UUID"
@@ -577,10 +593,12 @@ Try invalid mutations to verify error handling:
 
 ```graphql
 mutation InvalidOrder {
-  insert_order_one(object: {
-    customer_id: "CUST-INVALID"
-    total_amount: null  # Not null violated
-  }) {
+  insert_order_one(
+    object: {
+      customer_id: "CUST-INVALID"
+      total_amount: null # Not null violated
+    }
+  ) {
     id
   }
 }
@@ -595,6 +613,7 @@ Hasura returns a validation error. This is a chance to understand error response
 To build a production-ready Hasura instance:
 
 1. **Set the admin secret**:
+
    ```bash
    export HASURA_GRAPHQL_ADMIN_SECRET="strong-secret-key"
    docker-compose up -d
@@ -630,21 +649,26 @@ To build a production-ready Hasura instance:
 ## Troubleshooting
 
 **No tables showing in Hasura?**
+
 - Ensure `postgres` container is running: `docker-compose ps`
 - Check the database connection in Hasura console: **Data** > **Manage** > check connection string
 
 **Relationship not appearing?**
+
 - Create the foreign key first in SQL: `ALTER TABLE order_item ADD CONSTRAINT fk_part FOREIGN KEY (part_id) REFERENCES part(id);`
 - Then refresh the Hasura console
 
 **Subscription not updating in real-time?**
+
 - Ensure WebSocket support is enabled (it is by default)
 - Try the update in the same browser tab to rule out permission issues
 
 **Custom Action webhook not triggering?**
+
 - Verify the webhook URL is reachable from inside the Docker network: use `http://host.docker.internal:3000` on Mac/Windows, or the service name on Linux
 
 **Admin secret not working?**
+
 - Restart Hasura after setting `HASURA_GRAPHQL_ADMIN_SECRET`: `docker-compose down && docker-compose up -d`
 
 ---
@@ -668,5 +692,6 @@ When discussing this exercise in your interview:
 ## Next Steps
 
 Once you've completed this exercise:
+
 1. Move to **Practice 3: Next.js & GraphQL** to build the frontend
 2. You'll use this Hasura API as your backend from Practice 3's Apollo Client

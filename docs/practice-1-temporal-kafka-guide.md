@@ -3,6 +3,7 @@
 ## Overview
 
 In this exercise, you'll build a **resilient workflow orchestration system** using Temporal and Kafka. You'll learn how to:
+
 - Define multi-step workflows that coordinate activities
 - Implement retry policies for fault tolerance
 - Emit events asynchronously via Kafka for decoupled communication
@@ -18,6 +19,7 @@ In this exercise, you'll build a **resilient workflow orchestration system** usi
 ## Prerequisites
 
 Before starting, ensure you have:
+
 - Docker & Docker Compose installed
 - Node.js 18+ installed
 - pnpm installed (`npm install -g pnpm`)
@@ -36,11 +38,13 @@ docker-compose up -d
 ```
 
 **What this does**:
+
 - Starts a **Temporal Server** (usually accessible at `http://localhost:8080`)
 - Starts a **Kafka broker** for event streaming
 - Starts a **PostgreSQL database** (if needed for Temporal history)
 
 **Verify services are running**:
+
 ```bash
 docker-compose ps
 ```
@@ -56,6 +60,7 @@ pnpm install
 ```
 
 This installs:
+
 - `@temporalio/client` — Client to start workflows
 - `@temporalio/worker` — Worker to execute workflows and activities
 - `@temporalio/workflow` — Workflow definitions
@@ -89,6 +94,7 @@ practice-1-temporal-kafka/
 ```
 
 **Key distinction**:
+
 - **Activities**: Pure functions that do work (validate, reserve, charge)
 - **Workflows**: Orchestrate activities, retry on failure, coordinate state
 - **Kafka**: Publishes events once workflow reaches a certain state
@@ -100,30 +106,31 @@ practice-1-temporal-kafka/
 Open `src/workflows/orderWorkflow.ts` and read through the workflow definition:
 
 ```typescript
-import { proxyActivities } from '@temporalio/workflow';
-import { validateOrder, reserveInventory, chargePayment } from '../activities';
+import { proxyActivities } from "@temporalio/workflow";
+import { validateOrder, reserveInventory, chargePayment } from "../activities";
 
-const activities = proxyActivities<typeof import('../activities')>({
-  startToCloseTimeout: '10 seconds',
-  retry: { initialInterval: '1 second', maximumAttempts: 3 },
+const activities = proxyActivities<typeof import("../activities")>({
+  startToCloseTimeout: "10 seconds",
+  retry: { initialInterval: "1 second", maximumAttempts: 3 },
 });
 
 export async function orderWorkflow(input: OrderInput): Promise<void> {
   // Step 1: Validate order
   await activities.validateOrder(input);
-  
+
   // Step 2: Reserve inventory
   await activities.reserveInventory(input.orderId);
-  
+
   // Step 3: Charge payment
   await activities.chargePayment(input.orderId, input.amount);
-  
+
   // Step 4: Emit event to Kafka
   // (This happens after workflow completes successfully)
 }
 ```
 
 **Key concepts**:
+
 - `proxyActivities()` wraps activity functions so Temporal can track them
 - `startToCloseTimeout` limits how long a single activity can run
 - `retry` automatically retries failed activities up to 3 times
@@ -136,17 +143,19 @@ export async function orderWorkflow(input: OrderInput): Promise<void> {
 Open `src/activities/` to see individual activity implementations.
 
 Example: `validateOrder.ts`
+
 ```typescript
 export async function validateOrder(order: OrderInput): Promise<void> {
   // Validate order details (not idempotent required here)
   if (!order.items || order.items.length === 0) {
-    throw new Error('Order has no items');
+    throw new Error("Order has no items");
   }
   // ... validation logic
 }
 ```
 
 **Activity guidelines**:
+
 - Keep activities small and focused (one job per activity)
 - If an activity fails, Temporal retries it automatically
 - Activities must be **idempotent** if retried (same inputs = same side effects)
@@ -159,17 +168,17 @@ export async function validateOrder(order: OrderInput): Promise<void> {
 The worker executes workflows and activities. Open `src/worker.ts`:
 
 ```typescript
-import { Worker } from '@temporalio/worker';
-import * as workflows from './workflows';
-import * as activities from './activities';
+import { Worker } from "@temporalio/worker";
+import * as workflows from "./workflows";
+import * as activities from "./activities";
 
 async function run() {
   const worker = await Worker.create({
-    connection: { address: 'localhost:7233' }, // Temporal server address
-    namespace: 'default',
-    workflowsPath: require.resolve('./workflows'), // Where workflows are defined
+    connection: { address: "localhost:7233" }, // Temporal server address
+    namespace: "default",
+    workflowsPath: require.resolve("./workflows"), // Where workflows are defined
     activities, // All activities
-    taskQueue: 'default', // Task queue name
+    taskQueue: "default", // Task queue name
   });
 
   await worker.run();
@@ -179,6 +188,7 @@ run().catch(console.error);
 ```
 
 **Start the worker**:
+
 ```bash
 pnpm dev:worker
 ```
@@ -206,7 +216,7 @@ async function startWorkflow() {
   });
 
   console.log(`Workflow started: ${handle.workflowId}`);
-  
+
   // Wait for completion
   const result = await handle.result();
   console.log(`Workflow completed:`, result);
@@ -216,6 +226,7 @@ startWorkflow().catch(console.error);
 ```
 
 **Start a workflow**:
+
 ```bash
 pnpm dev:client
 ```
@@ -227,8 +238,8 @@ pnpm dev:client
 Once the workflow completes, emit an event. Modify `src/workflows/orderWorkflow.ts`:
 
 ```typescript
-import { Connection, Client } from '@temporalio/client';
-import { publishOrderEvent } from '../kafka';
+import { Connection, Client } from "@temporalio/client";
+import { publishOrderEvent } from "../kafka";
 
 export async function orderWorkflow(input: OrderInput): Promise<void> {
   await activities.validateOrder(input);
@@ -247,7 +258,7 @@ const result = await handle.result();
 // Emit to Kafka now that workflow is done
 await publishOrderEvent({
   orderId: input.orderId,
-  status: 'Validated',
+  status: "Validated",
   timestamp: new Date(),
 });
 ```
@@ -255,11 +266,11 @@ await publishOrderEvent({
 Open `src/kafka.ts` and implement the producer:
 
 ```typescript
-import { Kafka } from 'kafkajs';
+import { Kafka } from "kafkajs";
 
 const kafka = new Kafka({
-  clientId: 'order-service',
-  brokers: ['localhost:29092'], // Kafka broker address
+  clientId: "order-service",
+  brokers: ["localhost:29092"], // Kafka broker address
 });
 
 const producer = kafka.producer();
@@ -267,7 +278,7 @@ const producer = kafka.producer();
 export async function publishOrderEvent(event: any) {
   await producer.connect();
   await producer.send({
-    topic: 'shipment-events',
+    topic: "shipment-events",
     messages: [{ value: JSON.stringify(event) }],
   });
   await producer.disconnect();
@@ -281,26 +292,27 @@ export async function publishOrderEvent(event: any) {
 Open `tests/activities.test.ts` and write tests for individual activities:
 
 ```typescript
-import { validateOrder } from '../src/activities';
+import { validateOrder } from "../src/activities";
 
-describe('Activities', () => {
-  it('should validate a valid order', async () => {
+describe("Activities", () => {
+  it("should validate a valid order", async () => {
     const order = {
-      orderId: 'order-123',
-      items: [{ sku: 'PART-1', qty: 5 }],
+      orderId: "order-123",
+      items: [{ sku: "PART-1", qty: 5 }],
     };
     // Should not throw
     await expect(validateOrder(order)).resolves.toBeUndefined();
   });
 
-  it('should reject an order with no items', async () => {
-    const order = { orderId: 'order-456', items: [] };
-    await expect(validateOrder(order)).rejects.toThrow('Order has no items');
+  it("should reject an order with no items", async () => {
+    const order = { orderId: "order-456", items: [] };
+    await expect(validateOrder(order)).rejects.toThrow("Order has no items");
   });
 });
 ```
 
 **Run tests**:
+
 ```bash
 pnpm test -- tests/activities.test.ts
 ```
@@ -345,6 +357,7 @@ describe('Workflows', () => {
 ```
 
 **Run workflow tests**:
+
 ```bash
 pnpm test -- tests/workflows.test.ts
 ```
@@ -360,6 +373,7 @@ http://localhost:8080
 ```
 
 You'll see:
+
 - **Workflows tab**: List of running/completed workflows
 - **Execution details**: Timeline of activities with timestamps and results
 - **Failure details**: If an activity fails, why it failed and retry attempts
@@ -388,6 +402,7 @@ export async function orderWorkflow(input: OrderInput): Promise<void> {
 ```
 
 **Temporal guarantees**:
+
 - If a worker crashes mid-activity, Temporal resumes from that activity (not from the start)
 - Retries are automatic (configured in `proxyActivities`)
 - Workflow state is never lost—it's replayed from the event history
@@ -399,24 +414,24 @@ export async function orderWorkflow(input: OrderInput): Promise<void> {
 Write a test to verify events are published to Kafka:
 
 ```typescript
-import { publishOrderEvent } from '../src/kafka';
-import { Kafka } from 'kafkajs';
+import { publishOrderEvent } from "../src/kafka";
+import { Kafka } from "kafkajs";
 
-describe('Kafka', () => {
-  it('should publish an order event to Kafka', async () => {
+describe("Kafka", () => {
+  it("should publish an order event to Kafka", async () => {
     const event = {
-      orderId: 'order-123',
-      status: 'Validated',
+      orderId: "order-123",
+      status: "Validated",
       timestamp: new Date(),
     };
 
     await publishOrderEvent(event);
 
     // Create a consumer to verify the event was published
-    const kafka = new Kafka({ brokers: ['localhost:29092'] });
-    const consumer = kafka.consumer({ groupId: 'test-group' });
+    const kafka = new Kafka({ brokers: ["localhost:29092"] });
+    const consumer = kafka.consumer({ groupId: "test-group" });
     await consumer.connect();
-    await consumer.subscribe({ topic: 'shipment-events' });
+    await consumer.subscribe({ topic: "shipment-events" });
 
     // Read the message
     const messages: any[] = [];
@@ -438,16 +453,19 @@ describe('Kafka', () => {
 ## Step 14: Run the Full End-to-End Scenario
 
 1. **Start services** (if not running):
+
    ```bash
    docker-compose up -d
    ```
 
 2. **Start the worker** (in terminal 1):
+
    ```bash
    pnpm dev:worker
    ```
 
 3. **Trigger a workflow** (in terminal 2):
+
    ```bash
    pnpm dev:client
    ```
@@ -493,28 +511,33 @@ Ensure everything passes before moving to Practice 2.
 ✅ **The UI is your friend**: Use the Temporal UI to understand workflow execution and debug failures
 
 ✅ **Test at multiple levels**:
-  - Unit test activities in isolation
-  - Integration test workflows with a test Temporal server
-  - E2E test Kafka event emission
+
+- Unit test activities in isolation
+- Integration test workflows with a test Temporal server
+- E2E test Kafka event emission
 
 ---
 
 ## Troubleshooting
 
 **Worker not connecting to Temporal?**
+
 - Check that `docker-compose up -d` started the temporal service: `docker-compose ps`
 - Verify the address in `worker.ts` matches: typically `localhost:7233`
 
 **Workflow stuck or timed out?**
+
 - Check the Temporal UI for details
 - Verify activities aren't taking longer than `startToCloseTimeout` (default 10s)
 
 **Kafka events not appearing?**
+
 - Ensure the producer connects before publishing: `await producer.connect()`
 - Check the broker address: typically `localhost:29092` (internal Kafka port)
 - Verify the topic exists or is auto-created
 
 **Tests failing?**
+
 - Ensure Docker services are running: `docker-compose up -d`
 - Check that both `worker.ts` and tests use the same task queue name (`'default'`)
 
@@ -535,5 +558,6 @@ When discussing this exercise in your interview:
 ## Next Steps
 
 Once you've completed this exercise:
+
 1. Move to **Practice 2: Hasura & GraphQL** to build the data layer
 2. Come back here if you need to emit workflows results to the GraphQL schema

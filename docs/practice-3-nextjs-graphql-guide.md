@@ -3,6 +3,7 @@
 ## Overview
 
 In this exercise, you'll build a **full-stack React/Next.js frontend** that consumes the Hasura GraphQL API. You'll learn how to:
+
 - Fetch data from GraphQL using Apollo Client
 - Implement optimistic updates for instant user feedback
 - Set up real-time subscriptions to stay in sync
@@ -20,6 +21,7 @@ In this exercise, you'll build a **full-stack React/Next.js frontend** that cons
 ## Prerequisites
 
 Before starting, ensure you have:
+
 - Node.js 18+ installed
 - pnpm installed
 - Practice 2 (Hasura) running and accessible at `http://localhost:8080/graphql`
@@ -85,6 +87,7 @@ practice-3-nextjs-graphql/
 ```
 
 **Key distinction**:
+
 - **Server Components** (default): Fetch data on the server, render HTML, send to client
 - **Client Components** (`'use client'`): Run in the browser, handle interactivity and real-time updates
 - **API Routes**: Optional; useful for proxying GraphQL to hide the Hasura URL from the client
@@ -96,19 +99,19 @@ practice-3-nextjs-graphql/
 Apollo Client is the GraphQL client library. Open `lib/apolloClient.ts`:
 
 ```typescript
-import { ApolloClient, InMemoryCache, HttpLink, split } from '@apollo/client';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { createClient } from 'graphql-ws';
-import { getMainDefinition } from '@apollo/client/utilities';
+import { ApolloClient, InMemoryCache, HttpLink, split } from "@apollo/client";
+import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { createClient } from "graphql-ws";
+import { getMainDefinition } from "@apollo/client/utilities";
 
 const httpLink = new HttpLink({
-  uri: 'http://localhost:8080/graphql', // Hasura endpoint
-  credentials: 'include', // Include cookies if using auth
+  uri: "http://localhost:8080/graphql", // Hasura endpoint
+  credentials: "include", // Include cookies if using auth
 });
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: 'ws://localhost:8080/graphql', // WebSocket endpoint for subscriptions
+    url: "ws://localhost:8080/graphql", // WebSocket endpoint for subscriptions
   })
 );
 
@@ -116,10 +119,7 @@ const wsLink = new GraphQLWsLink(
 const link = split(
   ({ query }) => {
     const def = getMainDefinition(query);
-    return (
-      def.kind === 'OperationDefinition' &&
-      def.operation === 'subscription'
-    );
+    return def.kind === "OperationDefinition" && def.operation === "subscription";
   },
   wsLink,
   httpLink
@@ -132,6 +132,7 @@ export const client = new ApolloClient({
 ```
 
 This configures Apollo to:
+
 - Use HTTP for queries and mutations
 - Use WebSocket for subscriptions (for real-time updates)
 - Cache results in memory for fast access
@@ -143,7 +144,7 @@ This configures Apollo to:
 Open `lib/graphql/queries.ts` and write queries to fetch data from Hasura:
 
 ```typescript
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const GET_WORK_PLANS = gql`
   query GetWorkPlans {
@@ -186,14 +187,11 @@ These are GraphQL queries written as template strings (using `gql`). Apollo cach
 Open `lib/graphql/mutations.ts` and write mutations to update data:
 
 ```typescript
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const UPDATE_STEP_STATUS = gql`
   mutation UpdateStepStatus($stepId: uuid!, $status: work_step_status_enum!) {
-    update_work_step_by_pk(
-      pk_columns: { id: $stepId }
-      _set: { status: $status }
-    ) {
+    update_work_step_by_pk(pk_columns: { id: $stepId }, _set: { status: $status }) {
       id
       step_number
       status
@@ -203,17 +201,15 @@ export const UPDATE_STEP_STATUS = gql`
 `;
 
 export const CREATE_WORK_STEP = gql`
-  mutation CreateWorkStep(
-    $workPlanId: uuid!
-    $stepNumber: Int!
-    $description: String!
-  ) {
-    insert_work_step_one(object: {
-      work_plan_id: $workPlanId
-      step_number: $stepNumber
-      description: $description
-      status: "pending"
-    }) {
+  mutation CreateWorkStep($workPlanId: uuid!, $stepNumber: Int!, $description: String!) {
+    insert_work_step_one(
+      object: {
+        work_plan_id: $workPlanId
+        step_number: $stepNumber
+        description: $description
+        status: "pending"
+      }
+    ) {
       id
       step_number
       description
@@ -236,7 +232,7 @@ export interface WorkPlan {
   id: string;
   order_id: string;
   technician_id: string;
-  status: 'pending' | 'in_progress' | 'completed';
+  status: "pending" | "in_progress" | "completed";
   created_at: string;
   work_steps?: WorkStep[];
 }
@@ -245,7 +241,7 @@ export interface WorkStep {
   id: string;
   step_number: number;
   description: string;
-  status: 'pending' | 'in_progress' | 'completed';
+  status: "pending" | "in_progress" | "completed";
   completed_at?: string;
 }
 
@@ -253,7 +249,7 @@ export interface Order {
   id: string;
   customer_id: string;
   total_amount: number;
-  status: 'pending' | 'validated' | 'shipped';
+  status: "pending" | "validated" | "shipped";
   created_at: string;
 }
 ```
@@ -298,6 +294,7 @@ export default async function WorkPlansPage() {
 ```
 
 **Why server component?**
+
 - Fetch data at build time or request time
 - Never expose the Hasura URL to the client
 - Faster initial page load (HTML is ready when client receives it)
@@ -333,7 +330,7 @@ export default function WorkPlanList({ initialData }: Props) {
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6">Work Plans</h1>
-      
+
       {loading && <p>Loading...</p>}
 
       <div className="grid gap-4">
@@ -362,6 +359,7 @@ export default function WorkPlanList({ initialData }: Props) {
 ```
 
 **Key patterns**:
+
 - `useQuery()` fetches data and watches for updates
 - `data` contains the query result once loaded
 - `loading` indicates if data is still being fetched
@@ -425,6 +423,7 @@ export default function WorkPlanDetail({ workPlanId }: Props) {
 ```
 
 **Key concepts**:
+
 - `useQuery()` fetches initial data (from HTTP)
 - `useSubscription()` watches for real-time changes (via WebSocket)
 - Apollo merges subscription updates into the cache
@@ -516,6 +515,7 @@ export default function StepCard({ step, workPlanId }: Props) {
 ```
 
 **Optimistic Updates**:
+
 - `optimisticResponse` shows the expected result immediately (no spinner)
 - User sees "✓ Done" before the server responds
 - If mutation fails, Apollo reverts to the previous state
@@ -528,20 +528,20 @@ export default function StepCard({ step, workPlanId }: Props) {
 Create `hooks/useWorkPlan.ts`:
 
 ```typescript
-import { useQuery, useSubscription } from '@apollo/client';
-import { GET_WORK_PLAN_DETAIL } from '@/lib/graphql/queries';
-import { WorkPlan } from '@/lib/types';
+import { useQuery, useSubscription } from "@apollo/client";
+import { GET_WORK_PLAN_DETAIL } from "@/lib/graphql/queries";
+import { WorkPlan } from "@/lib/types";
 
 export function useWorkPlan(workPlanId: string) {
-  const { data, loading: queryLoading, error: queryError } = useQuery(
-    GET_WORK_PLAN_DETAIL,
-    { variables: { id: workPlanId } }
-  );
+  const {
+    data,
+    loading: queryLoading,
+    error: queryError,
+  } = useQuery(GET_WORK_PLAN_DETAIL, { variables: { id: workPlanId } });
 
-  const { data: subData, loading: subLoading } = useSubscription(
-    GET_WORK_PLAN_DETAIL,
-    { variables: { id: workPlanId } }
-  );
+  const { data: subData, loading: subLoading } = useSubscription(GET_WORK_PLAN_DETAIL, {
+    variables: { id: workPlanId },
+  });
 
   const workPlan: WorkPlan | null = subData?.work_plan_by_pk ?? data?.work_plan_by_pk ?? null;
 
@@ -638,11 +638,13 @@ describe('WorkPlanDetail', () => {
 ```
 
 **Testing patterns**:
+
 - `MockedProvider` provides a mock Apollo client for tests
 - Mock GraphQL responses to test without a live server
 - Use `screen.findByText()` to wait for async data
 
 **Run tests**:
+
 ```bash
 pnpm test
 ```
@@ -716,6 +718,7 @@ export default function WorkPlanList({ initialData }) {
 ```
 
 **Patterns**:
+
 - Show skeleton loaders while fetching (or reuse initial data)
 - Display error messages with retry button
 - Disable buttons during network operations
@@ -737,7 +740,7 @@ Update `lib/apolloClient.ts` to use these:
 ```typescript
 const httpLink = new HttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-  credentials: 'include',
+  credentials: "include",
 });
 
 const wsLink = new GraphQLWsLink(
@@ -752,23 +755,27 @@ const wsLink = new GraphQLWsLink(
 ## Step 15: Build and Deploy
 
 **Development**:
+
 ```bash
 pnpm dev
 ```
 
 **Production Build**:
+
 ```bash
 pnpm build
 pnpm start
 ```
 
 **Deploy to Vercel** (recommended for Next.js):
+
 ```bash
 npm i -g vercel
 vercel
 ```
 
 In Vercel settings:
+
 1. Add environment variables from `.env.local`
 2. Ensure GraphQL endpoints are publicly accessible (or use API proxy)
 3. Deploy
@@ -852,6 +859,7 @@ export const GET_WORK_PLANS_PAGINATED = gql`
 ```
 
 In component:
+
 ```typescript
 const [page, setPage] = useState(0);
 const pageSize = 10;
@@ -867,7 +875,7 @@ const totalPages = Math.ceil(
 return (
   <>
     {/* Render work plans */}
-    
+
     <div className="flex gap-2 mt-6">
       <button
         onClick={() => setPage(p => p - 1)}
@@ -910,21 +918,25 @@ return (
 ## Troubleshooting
 
 **Apollo not connecting to Hasura?**
+
 - Verify Hasura is running: `docker-compose ps` in practice-2
 - Check the endpoint URL in `.env.local`
 - Ensure CORS is enabled on Hasura (it is by default)
 
 **Subscriptions not updating?**
+
 - Verify WebSocket endpoint is accessible: `ws://localhost:8080/graphql`
 - Check browser console for WebSocket errors
 - Try a fresh browser tab (clear cookies if auth headers are set)
 
 **Tests failing?**
+
 - Ensure all Apollo queries are mocked in tests
 - Check that mock response structure matches query expectations
 - Use `MockedProvider` for all test renders
 
 **Performance issues?**
+
 - Check Apollo DevTools for unnecessary re-queries
 - Use `cache-first` fetch policy for stable data
 - Implement pagination for large datasets
