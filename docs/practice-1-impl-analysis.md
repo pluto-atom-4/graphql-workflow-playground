@@ -9,23 +9,24 @@
 
 The implementation is **75% aligned** with the guide but has several material gaps and inconsistencies:
 
-| Category | Status | Severity |
-| --- | --- | --- |
-| **Project Structure** | ⚠️ Partially Aligned | Medium |
-| **Scripts & Commands** | ❌ Mismatched | High |
-| **Activities Implementation** | ✅ Aligned | Low |
-| **Workflow Definition** | ✅ Aligned | Low |
-| **Kafka Integration** | ⚠️ Partially Aligned | Medium |
-| **Testing Coverage** | ❌ Incomplete | High |
-| **Error Handling** | ✅ Aligned | Low |
-| **Documentation in Code** | ⚠️ Minimal | Medium |
-| **Cross-Practice Integration** | ⚠️ Unclear | Medium |
+| Category                       | Status               | Severity |
+| ------------------------------ | -------------------- | -------- |
+| **Project Structure**          | ⚠️ Partially Aligned | Medium   |
+| **Scripts & Commands**         | ❌ Mismatched        | High     |
+| **Activities Implementation**  | ✅ Aligned           | Low      |
+| **Workflow Definition**        | ✅ Aligned           | Low      |
+| **Kafka Integration**          | ⚠️ Partially Aligned | Medium   |
+| **Testing Coverage**           | ❌ Incomplete        | High     |
+| **Error Handling**             | ✅ Aligned           | Low      |
+| **Documentation in Code**      | ⚠️ Minimal           | Medium   |
+| **Cross-Practice Integration** | ⚠️ Unclear           | Medium   |
 
 ---
 
 ## 1. Project Structure Gaps
 
 ### Guide Says:
+
 ```
 practice-1-temporal-kafka/
 ├── src/
@@ -46,6 +47,7 @@ practice-1-temporal-kafka/
 ```
 
 ### Implementation Has:
+
 ```
 practice-1-temporal-kafka/
 ├── src/
@@ -84,6 +86,7 @@ practice-1-temporal-kafka/
 ## 2. Scripts & Commands Mismatch
 
 ### Guide Says:
+
 ```bash
 pnpm dev:worker          # Run the worker
 pnpm dev:client          # Trigger a workflow
@@ -92,6 +95,7 @@ pnpm test -- tests/workflows.test.ts
 ```
 
 ### Implementation Has:
+
 ```json
 {
   "dev": "tsx watch src/temporal/worker.ts",
@@ -107,12 +111,13 @@ pnpm test -- tests/workflows.test.ts
 
 1. **No `pnpm dev:worker` script**: Guide assumes `dev:worker` but actual script is `dev`
 2. **No `pnpm dev:client` script**: Guide assumes `dev:client` to start workflows; implementation requires `pnpm start:starter` (not documented)
-3. **Test patterns different**: 
+3. **Test patterns different**:
    - Guide uses path-based jest: `pnpm test -- tests/activities.test.ts`
    - Implementation uses jest.config.ts with `testMatch: ["**/__tests__/**/*.test.ts"]` (different directory convention)
 4. **No `pnpm build` documented in implementation**: Guide mentions `pnpm build` but no docs on what it does
 
 ### ⚠️ Impact:
+
 Users following the guide exactly will fail when running suggested commands. They must discover the actual script names themselves.
 
 ---
@@ -137,11 +142,13 @@ Users following the guide exactly will fail when running suggested commands. The
 ## 4. Kafka Integration
 
 ### Guide Says:
+
 - "Emit the event from the client after workflow completes"
 - "Open `src/kafka.ts` and implement the producer"
 - Example shows standalone `publishOrderEvent()` function
 
 ### Implementation Has:
+
 - Kafka emission integrated as a **workflow activity** (`emit-kafka-event.activity.ts`)
 - Producer abstracted as `sendToTopic()` in `src/kafka/producer.ts`
 - Configuration externalized to `src/config/kafka.config.ts`
@@ -149,12 +156,12 @@ Users following the guide exactly will fail when running suggested commands. The
 
 ### 🟡 Design Decision Difference:
 
-| Aspect | Guide | Implementation |
-| --- | --- | --- |
-| **Emission Timing** | Client-side, after workflow | Activity-level, inside workflow |
-| **Atomicity** | Weaker (can fail post-workflow) | Stronger (part of workflow history) |
+| Aspect               | Guide                                    | Implementation                               |
+| -------------------- | ---------------------------------------- | -------------------------------------------- |
+| **Emission Timing**  | Client-side, after workflow              | Activity-level, inside workflow              |
+| **Atomicity**        | Weaker (can fail post-workflow)          | Stronger (part of workflow history)          |
 | **Producer Pattern** | Singleton with manual connect/disconnect | Singleton with single-use producer lifecycle |
-| **Topic Management** | Hardcoded in code | Centralized config |
+| **Topic Management** | Hardcoded in code                        | Centralized config                           |
 
 **Recommendation**: Implementation's approach (activity-level emission) is more robust for production but differs from guide's teaching.
 
@@ -187,6 +194,7 @@ __tests__/
 4. **No test documentation**: Implementation doesn't explain how to run tests or what they verify
 
 ### Coverage Implications:
+
 - Current test coverage likely **<50%** (jest.config.ts sets 50% threshold, barely met with single test)
 - Workflow retries, failures, and Kafka integration untested
 - Interview talking point weakened: can't discuss testing strategy with confidence
@@ -198,20 +206,22 @@ __tests__/
 ### Data Flow Contract Issues:
 
 **Guide suggests**:
+
 1. Practice 1 emits events to Kafka topic `shipment-events`
 2. Practice 2 exposes orders/work plans via GraphQL API
 3. Practice 3 fetches real-time work plan updates via subscriptions
 
 **Implementation Status**:
 
-| Layer | Status | Notes |
-| --- | --- | --- |
-| **Practice 1 → Kafka** | ✅ Works | Emits to `shipment-events` topic |
-| **Kafka → Practice 2 (GraphQL)** | ❓ Unclear | No documented integration; no consumer shown |
-| **Practice 2 → Practice 3** | ✅ Documented | Practice 3 guide assumes Practice 2 API |
-| **Practice 3 ← Practice 1 flow** | ❌ Missing | How do Temporal workflows trigger GraphQL mutations/subscriptions? |
+| Layer                            | Status        | Notes                                                              |
+| -------------------------------- | ------------- | ------------------------------------------------------------------ |
+| **Practice 1 → Kafka**           | ✅ Works      | Emits to `shipment-events` topic                                   |
+| **Kafka → Practice 2 (GraphQL)** | ❓ Unclear    | No documented integration; no consumer shown                       |
+| **Practice 2 → Practice 3**      | ✅ Documented | Practice 3 guide assumes Practice 2 API                            |
+| **Practice 3 ← Practice 1 flow** | ❌ Missing    | How do Temporal workflows trigger GraphQL mutations/subscriptions? |
 
 ### 🟡 Cross-Practice Gap:
+
 - Practice 1 documentation doesn't explain how Kafka events feed into Practice 2's database
 - No example of consuming Kafka messages and writing to PostgreSQL
 - No trigger shown for updating Order/WorkPlan status in GraphQL when Temporal workflow completes
@@ -222,10 +232,12 @@ __tests__/
 ## 7. Environment & Configuration
 
 ### Guide Assumes:
+
 - All services run on `localhost:7233` (Temporal), `localhost:29092` (Kafka)
 - No mention of `.env` or environment variable handling
 
 ### Implementation Provides:
+
 - `.env.example` with explicit config:
   ```
   TEMPORAL_ADDRESS=localhost:7233
@@ -237,6 +249,7 @@ __tests__/
 - Config modules (`temporal.config.ts`, `kafka.config.ts`) read from `.env`
 
 ### ✅ Implementation Better:
+
 Configuration explicitly defined beats hardcoding, but **guide should mention env setup**.
 
 ---
@@ -244,10 +257,12 @@ Configuration explicitly defined beats hardcoding, but **guide should mention en
 ## 8. Docker Compose Integration
 
 ### Guide Says:
+
 - "Start services: `docker-compose up -d`"
 - Lists expected containers: `temporal`, `kafka`, `zookeeper`
 
 ### Implementation Has:
+
 ```yaml
 include:
   - path: ../infra/docker/docker-compose.shared.yml
@@ -268,12 +283,14 @@ services:
 ## 9. Code Quality & Documentation
 
 ### In Implementation:
+
 - Minimal inline comments
 - No README in practice-1 folder
 - No troubleshooting section at package level
 - Types imported from shared workspace but not explained
 
 ### Missing:
+
 - Clear instructions on:
   - How to extend with new activities
   - How to add new workflow types
@@ -285,16 +302,19 @@ services:
 ## 10. Temporal UI & Observability
 
 ### Guide Emphasizes (Step 11):
+
 - "Visit `http://localhost:8080` to see workflows"
 - Shows exact UI features: Workflows tab, Execution details, Failure details, History
 
 ### Implementation Note:
+
 - `starter.ts` (line 29) references `http://localhost:8088` (different port!)
   ```typescript
   View workflow in Temporal UI: http://localhost:8088/namespaces/${temporalConfig.namespace}/workflows/${order.orderId}
   ```
 
 ### 🔴 Critical Mismatch:
+
 - Guide says port 8080; implementation prints port 8088
 - Users following guide will go to wrong URL
 
@@ -303,6 +323,7 @@ services:
 ## 11. Activity Error Handling Comparison
 
 ### Guide Pattern (line 396):
+
 ```typescript
 try {
   // ...
@@ -313,6 +334,7 @@ try {
 ```
 
 ### Implementation Pattern:
+
 ```typescript
 const validation = await activities.validateOrder(order);
 if (!validation.valid) {
@@ -321,6 +343,7 @@ if (!validation.valid) {
 ```
 
 ### Analysis:
+
 - Implementation uses **return-based validation** (better); guide uses **exception-based**
 - Implementation's `ApplicationFailure.nonRetryable()` correctly signals unrecoverable errors
 - Guide's compensating transaction example (`releaseReservation`) missing from implementation
@@ -330,12 +353,14 @@ if (!validation.valid) {
 ## Summary of Severity Levels
 
 ### 🔴 Critical Issues (Must Fix):
+
 1. Script names (`dev:worker`, `dev:client`) don't match implementation
 2. Temporal UI port 8088 vs 8080 discrepancy
 3. Missing integration tests (guide promises; implementation missing)
 4. Test directory structure differs (`tests/` vs `__tests__/unit/`)
 
 ### 🟡 Medium Issues (Should Clarify):
+
 1. Project structure too granular vs. guide simplicity
 2. Config externalization not explained
 3. Kafka emission moved to activity level (design change)
@@ -343,6 +368,7 @@ if (!validation.valid) {
 5. Shared infrastructure dependency not documented
 
 ### 🟢 Low Issues (Nice to Have):
+
 1. Activity naming conventions (kebab-case + .activity suffix)
 2. Minimal inline code comments
 3. No README at practice folder level
@@ -353,6 +379,7 @@ if (!validation.valid) {
 ## Recommendations
 
 ### For Guide Update:
+
 1. **Correct script names**: Change `pnpm dev:worker` → `pnpm dev` and document `pnpm start:starter`
 2. **Fix Temporal UI port**: Confirm whether port is 8080 or 8088; update consistently
 3. **Add test directory structure** section explaining `__tests__/unit/` pattern
@@ -361,6 +388,7 @@ if (!validation.valid) {
 6. **Explain why activities structure** differs (`src/temporal/activities/` vs `src/activities/`)
 
 ### For Implementation Update:
+
 1. **Add missing tests**:
    - `__tests__/unit/reserve-inventory.test.ts`
    - `__tests__/unit/emit-kafka-event.test.ts`
@@ -374,6 +402,7 @@ if (!validation.valid) {
 6. **Add example of failure recovery** in a test scenario
 
 ### For Cross-Practice Alignment:
+
 1. **Kafka consumer in Practice 2**: Add example that reads `shipment-events` and writes to PostgreSQL
 2. **Webhook from Practice 3 to Practice 1**: Show how GraphQL mutations might trigger Temporal workflows
 3. **Create integration diagram**: ASCII or markdown showing data flow across all three practices
@@ -382,18 +411,18 @@ if (!validation.valid) {
 
 ## Appendix: File-by-File Alignment
 
-| File | Guide Reference | Implementation Status | Notes |
-| --- | --- | --- | --- |
-| `src/workflows/orderWorkflow.ts` | ✅ Documented | `src/temporal/workflows/shipment.workflow.ts` | Named differently, but equivalent |
-| `src/activities/validateOrder.ts` | ✅ Documented | `src/temporal/activities/validate-order.activity.ts` | Naming convention change |
-| `src/activities/reserveInventory.ts` | ✅ Documented | `src/temporal/activities/reserve-inventory.activity.ts` | Exists but no examples in guide |
-| `src/client.ts` | ✅ Documented | `src/client/temporal-client.ts` + `src/starter.ts` | Split into two files |
-| `src/worker.ts` | ✅ Documented | `src/temporal/worker.ts` | Matches intent |
-| `src/kafka.ts` | ✅ Documented | `src/kafka/producer.ts` + `src/config/kafka.config.ts` | Modularized |
-| `src/types.ts` | ✅ Documented | Uses `@boltline/shared-types` | Externalized to workspace |
-| `tests/activities.test.ts` | ✅ Expected | `__tests__/unit/validate-order.test.ts` (partial) | Incomplete |
-| `tests/workflows.test.ts` | ✅ Expected | ❌ Missing | Critical gap |
-| `tests/kafka.test.ts` | ✅ Expected | ❌ Missing | Critical gap |
+| File                                 | Guide Reference | Implementation Status                                   | Notes                             |
+| ------------------------------------ | --------------- | ------------------------------------------------------- | --------------------------------- |
+| `src/workflows/orderWorkflow.ts`     | ✅ Documented   | `src/temporal/workflows/shipment.workflow.ts`           | Named differently, but equivalent |
+| `src/activities/validateOrder.ts`    | ✅ Documented   | `src/temporal/activities/validate-order.activity.ts`    | Naming convention change          |
+| `src/activities/reserveInventory.ts` | ✅ Documented   | `src/temporal/activities/reserve-inventory.activity.ts` | Exists but no examples in guide   |
+| `src/client.ts`                      | ✅ Documented   | `src/client/temporal-client.ts` + `src/starter.ts`      | Split into two files              |
+| `src/worker.ts`                      | ✅ Documented   | `src/temporal/worker.ts`                                | Matches intent                    |
+| `src/kafka.ts`                       | ✅ Documented   | `src/kafka/producer.ts` + `src/config/kafka.config.ts`  | Modularized                       |
+| `src/types.ts`                       | ✅ Documented   | Uses `@boltline/shared-types`                           | Externalized to workspace         |
+| `tests/activities.test.ts`           | ✅ Expected     | `__tests__/unit/validate-order.test.ts` (partial)       | Incomplete                        |
+| `tests/workflows.test.ts`            | ✅ Expected     | ❌ Missing                                              | Critical gap                      |
+| `tests/kafka.test.ts`                | ✅ Expected     | ❌ Missing                                              | Critical gap                      |
 
 ---
 
@@ -405,38 +434,44 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 
 ### Current State Analysis
 
-| Practice | Implementation Status | Documentation Status | Tests | README | Cross-Practice Ready? |
-| --- | --- | --- | --- | --- | --- |
-| **1: Temporal** | 75% Complete | 100% (but misaligned) | 9% (1/11 files) | ❌ None | ⚠️ Partial |
-| **2: Hasura** | 60% Complete | 100% | ~0% | ❌ None | ✅ Yes |
-| **3: Next.js** | 70% Complete | 100% | ~5% | ❌ None | ⚠️ Partial |
+| Practice        | Implementation Status | Documentation Status  | Tests           | README  | Cross-Practice Ready? |
+| --------------- | --------------------- | --------------------- | --------------- | ------- | --------------------- |
+| **1: Temporal** | 75% Complete          | 100% (but misaligned) | 9% (1/11 files) | ❌ None | ⚠️ Partial            |
+| **2: Hasura**   | 60% Complete          | 100%                  | ~0%             | ❌ None | ✅ Yes                |
+| **3: Next.js**  | 70% Complete          | 100%                  | ~5%             | ❌ None | ⚠️ Partial            |
 
 ### Resource Requirements Analysis
 
 #### Option A: Update Documentation Only
+
 **Effort**: 8–12 hours  
 **Scope**:
+
 - Fix script names across all guides (dev, dev:worker, dev:client)
 - Correct port references (8080 vs 8088 for Temporal UI)
-- Update test directory structure references (tests/ → __tests__/unit/)
+- Update test directory structure references (tests/ → **tests**/unit/)
 - Add cross-practice integration chapter explaining Kafka → GraphQL → UI flow
 - Create architecture diagram showing Practice 1→2→3 data dependencies
 - Add READMEs for each practice folder
 
 **Pros**:
+
 - Fast turnaround
 - Implementation stays stable (less risk of regressions)
 - Can be done in parallel with development
 
 **Cons**:
+
 - Leaves testing incomplete (critical for interview prep)
 - Implementation remains more complex than documented
 - Config patterns unexplained
 - Cross-practice data flow still unclear to users
 
 #### Option B: Refactor Implementation Only
+
 **Effort**: 16–24 hours  
 **Scope**:
+
 - Flatten directory structure: `src/temporal/activities/` → `src/activities/`
 - Rename entry points: `starter.ts` → `client.ts`
 - Create npm scripts aliases: add `dev:worker`, `dev:client`
@@ -447,28 +482,33 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 - Add comprehensive JSDoc comments
 
 **Pros**:
+
 - Implementation matches guide exactly
 - Simpler structure for learning
 - Testing becomes complete
 - Better aligns with interview talking points
 
 **Cons**:
+
 - Higher risk (refactoring core workflow files)
 - Requires regression testing across all three practices
 - Longer time to completion
 - May need schema/API adjustments in Practice 2
 
 #### Option C: Hybrid Approach (Recommended) ⭐
+
 **Effort**: 20–28 hours  
 **Scope**:
 
 **Phase 1: Documentation (6–8 hours)**
+
 - Fix critical mismatches (script names, ports, test structure)
 - Add cross-practice integration chapter
 - Create data flow diagrams
 - Add READMEs to each practice
 
 **Phase 2: Implementation Refactor (12–16 hours)**
+
 - Flatten directory structure for clarity
 - Add missing tests (workflows, kafka)
 - Create npm script aliases for compatibility
@@ -476,12 +516,14 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 - Implement consumer pattern example
 
 **Phase 3: Validation (2–4 hours)**
+
 - Verify all three practices work end-to-end
 - Run full test suite
 - Update interview talking points
 - Final documentation review
 
 **Pros**:
+
 - ✅ Both documentation and implementation align
 - ✅ Interview prep strengthened (full testing, clear architecture)
 - ✅ Users can follow guide without deviation
@@ -489,6 +531,7 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 - ✅ Cross-practice integration becomes explicit
 
 **Cons**:
+
 - Longest timeline
 - Requires most coordination
 
@@ -515,27 +558,32 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 #### Phase 1: Documentation Alignment (6–8 hours)
 
 **1.1 Fix Script Names** (1 hour)
+
 - Update practice-1 guide: `pnpm dev:worker` → `pnpm dev`, add `pnpm start:starter`
 - Verify Practice 2 & 3 scripts match their actual package.json
 - Add script reference table to all guides
 
 **1.2 Fix Infrastructure & Ports** (1.5 hours)
+
 - Correct Temporal UI port: 8080 vs 8088 (verify actual port in docker-compose.shared.yml)
 - Document shared infrastructure location (`../infra/docker-compose.shared.yml`)
 - Add port reference table
 
 **1.3 Add Cross-Practice Integration** (2 hours)
+
 - Create "Integration Architecture" section in all three guides
 - Show data flow: Practice 1 (Temporal) → Kafka → Practice 2 (GraphQL) → Practice 3 (Apollo)
 - Add example: "Order Fulfillment Flow" spanning all three
 - Document how Kafka messages trigger GraphQL mutations/subscriptions
 
 **1.4 Add READMEs** (1.5 hours)
+
 - Create `practice-1-temporal-kafka/README.md` (quick start)
 - Create `practice-2-hasura-graphql/README.md` (schema overview)
 - Create `practice-3-nextjs-graphql/README.md` (component structure)
 
 **1.5 Update practice-1-impl-analysis.md** (2 hours)
+
 - Add "Recommended Action Plan" with phased approach
 - Create checklist for each phase
 - Document success metrics
@@ -543,6 +591,7 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 #### Phase 2: Implementation Refactor (12–16 hours)
 
 **2.1 Directory Structure** (3 hours)
+
 - Move `src/temporal/activities/` → `src/activities/`
 - Move `src/temporal/workflows/` → `src/workflows/`
 - Move config to `src/config/` (already done, keep)
@@ -550,11 +599,13 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 - Update all imports and tests
 
 **2.2 npm Scripts** (1 hour)
+
 - Add `dev:worker` alias: `"dev:worker": "pnpm dev"`
 - Add `dev:client` script: `"dev:client": "tsx src/client.ts"`
 - Ensure all scripts match guide references
 
 **2.3 Missing Tests** (6–8 hours)
+
 - Write `__tests__/unit/reserve-inventory.test.ts` (activity unit test)
 - Write `__tests__/unit/emit-kafka-event.test.ts` (activity unit test)
 - Write `__tests__/integration/shipment-workflow.test.ts` (workflow integration test using TestWorkflowEnvironment)
@@ -562,12 +613,14 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 - Achieve 70%+ coverage threshold
 
 **2.4 Code Quality** (2 hours)
+
 - Add JSDoc comments to all activities
 - Add JSDoc to workflows
 - Ensure TypeScript strict mode compliance
 - Run linter and fix issues
 
 **2.5 Cross-Practice Bridge** (1–2 hours)
+
 - Add Kafka consumer example (not required, but helpful)
 - Document how Kafka events would trigger GraphQL mutations (pseudo-code)
 - Add example payload structures
@@ -575,21 +628,25 @@ After analyzing resource requirements and cross-practice dependencies, here's a 
 #### Phase 3: Validation & Final Polish (2–4 hours)
 
 **3.1 End-to-End Testing** (1 hour)
+
 - Verify Practice 1 workflow executes end-to-end
 - Verify Kafka events publish correctly
 - Verify Temporal UI is accessible and shows workflow
 
 **3.2 Documentation Verification** (1 hour)
+
 - Follow guide exactly as written; verify all commands work
 - Test all script aliases
 - Verify port references are correct
 
 **3.3 Cross-Practice Validation** (1 hour)
+
 - Verify Practice 1 Kafka events could feed Practice 2
 - Verify Practice 2 GraphQL schema is ready for Practice 3
 - Verify Practice 3 components can consume Practice 2 API
 
 **3.4 Interview Preparation** (1 hour)
+
 - Update "Interview Talking Points" in each guide
 - Add specific metrics (test coverage, lines of code, performance)
 - Create cheat sheet for demo scenarios
@@ -630,9 +687,10 @@ If time is limited, focus on **highest-impact items**:
 
 ## Conclusion
 
-The implementation is **production-ready in core functionality** but **documentation and testing gaps undermine interview readiness**. 
+The implementation is **production-ready in core functionality** but **documentation and testing gaps undermine interview readiness**.
 
 **Strategic Recommendation**: Proceed with **Option C (Hybrid)** for strongest interview preparation. The 20–28 hour investment pays dividends through:
+
 - Clear alignment between documentation and implementation
 - Strong testing story (critical for Temporal reliability narrative)
 - Explicit cross-practice integration (shows architectural thinking)
@@ -645,12 +703,14 @@ If timeline is tight, pursue **Fast-Track Option** (10–12 hours) for immediate
 ## Action Items
 
 ### Immediate (Next Session)
+
 1. Verify actual Temporal UI port (8080 or 8088)
 2. Confirm shared infrastructure path in docker-compose.shared.yml
 3. Decide between Option A, B, C, or Fast-Track
 4. Create task breakdown in SQL or Markdown
 
 ### If Proceeding with Refactor
+
 1. Create feature branch: `refactor/practice-1-alignment`
 2. Phase 1: Documentation updates (6–8 hours)
 3. Phase 2: Implementation refactor (12–16 hours)
@@ -658,8 +718,8 @@ If timeline is tight, pursue **Fast-Track Option** (10–12 hours) for immediate
 5. Create PR with testing evidence
 
 ### Success Metrics Post-Completion
+
 - All guides successfully followed with zero deviation
 - Test coverage ≥70% across practices
 - Cross-practice integration explicitly documented
 - Interview talking points reinforced in code examples
-
