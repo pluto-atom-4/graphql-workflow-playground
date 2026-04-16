@@ -277,6 +277,37 @@ When implementing features, keep real-world constraints in mind:
 - Multi-practice impacts → Alert Orchestrator
 - Test failures blocking progress → Call Tester agent
 
+## Git Workflow & Rebasing
+
+### When CI Fails Due to Upstream Dependencies
+
+If your PR's CI fails due to a security or dependency issue that gets fixed upstream:
+
+1. **Identify the blocker**: Check CI logs for security audit or dependency errors
+2. **Wait for upstream merge**: If another PR (e.g., #23) fixes it, wait for merge to main
+3. **Rebase your branch**:
+   ```bash
+   git rebase main
+   git push origin <branch-name> --force
+   ```
+4. **CI re-runs automatically**: GitHub Actions will re-trigger all checks
+5. **Verify all checks pass**: PR becomes mergeable once upstream fix is applied
+
+**Example**: PR #21 failed Security Checks because nanoid vulnerability wasn't fixed. PR #23 merged the fix to main. Rebasing PR #21 on top of main picked up the fix, CI re-ran, and Security Checks passed.
+
+### Rebase vs. Merge
+
+- **Use rebase** when: Updating your branch with upstream changes (keeps history clean)
+- **Use merge** when: Combining completed feature branches into main (preserves history)
+
+### Force Push Safety
+
+When using `git push --force`:
+
+- Only force push to **feature branches** you own
+- **Never** force push to shared branches like main or develop
+- Always communicate with your team before force pushing to shared feature branches
+
 ## Related Resources
 
 - `.github/copilot-instructions.md`: Build/test/lint commands and architecture overview
