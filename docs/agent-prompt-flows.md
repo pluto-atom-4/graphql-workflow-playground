@@ -2,6 +2,50 @@
 
 Welcome to the graphql-workflow-playground! This project uses **Copilot agents** to streamline development across multiple roles. This guide explains how to use these agents effectively through prompt flows.
 
+---
+
+## 🚀 Quick Start: Copilot CLI Commands
+
+These commands accelerate your workflow. Use them throughout development:
+
+| Command | What It Does | Example |
+|---------|---|---|
+| **`/plan`** | Create implementation plan | `/plan` → Break down a complex feature |
+| **`/diff`** | Review changes before commit | `/diff` → Check your code changes |
+| **`/review`** | Automated code review | `/review` → Find bugs automatically |
+| **`/ask`** | Ask clarifying questions | `/ask` → Unblock without losing context |
+| **`/delegate`** | Escalate to GitHub PR | `/delegate` → Send blocker to GitHub |
+| **`/lsp`** | Language server (go-to-def, refactor) | `/lsp` → Navigate large codebase |
+| **`/tasks`** | View background operations | `/tasks` → Monitor long-running work |
+| **`/fleet`** | Run agents in parallel | `/fleet` → Orchestrator uses to run agents |
+
+**Most Important**: Use `/plan` to start complex work, `/diff` before git push, `/review` before merging.
+
+---
+
+## Model Override Guidance
+
+**Default**: Claude Haiku 4.5 (fast, cost-efficient) ✅
+
+**Premium Models** (require explicit `/model` + justification):
+- `gpt-5.4` — Complex multi-practice architecture
+- `claude-sonnet-4.6` — Large codebase analysis
+- `claude-opus-4.6` — Emergency high-complexity debugging
+
+**How to use**:
+```
+/model claude-sonnet-4.6
+
+@developer
+[Complex task that needs premium reasoning]
+
+Justification: Analyzing 3 practices' interaction patterns
+```
+
+**Policy**: Premium requests are tracked. Use for genuinely complex work only.
+
+---
+
 ## What Are Agents?
 
 Agents are specialized assistants, each with deep knowledge of their role:
@@ -14,6 +58,8 @@ Agents are specialized assistants, each with deep knowledge of their role:
 
 Instead of asking one general assistant, you invoke specific agents for specific tasks. This leads to better results and faster feedback.
 
+---
+
 ## Agent Overview
 
 | Agent               | When to Use                                             | Example Prompt                                            |
@@ -23,6 +69,8 @@ Instead of asking one general assistant, you invoke specific agents for specific
 | **Developer**       | Write code, fix bugs, implement features                | "Implement the validateOrder activity in Temporal"        |
 | **Tester**          | Design tests, validate edge cases, write test code      | "Write Jest tests for the validateOrder activity"         |
 | **Reviewer**        | Code review, validate architecture, catch issues        | "Review my Apollo Client mutation for performance issues" |
+
+---
 
 ## The Feature Development Workflow
 
@@ -339,6 +387,40 @@ Then: `@tester` writes tests, `@reviewer` checks quality.
 
 ## Best Practices for Prompt Flows
 
+### 0. Understand Escalation Criteria (Know When to Ask for Help)
+
+Each agent has specific thresholds for when to escalate or seek help:
+
+**Orchestrator Escalation Thresholds:**
+- Handle: 0–1 concurrent blockers
+- Escalate: 2+ concurrent blockers OR work blocked >2 hours
+- Use `/delegate` to escalate to GitHub
+
+**Product Manager Escalation Thresholds:**
+- Approve: 0–10% scope creep (feature aligned)
+- Review & Refine: 10–30% scope creep (borderline)
+- Restart Planning: >30% scope creep (too far off target)
+
+**Tester Approval Thresholds:**
+- Block PR: <80% code coverage (non-negotiable)
+- Report Issue: Tests <95% reliable (flaky tests)
+- Escalate: Any test >5 seconds (performance blocker)
+
+**Reviewer Block Criteria:**
+- Block: Critical bugs, security issues, type errors
+- Request Changes: Missing error handling, unsafe patterns
+- Approve: Style issues, minor improvements
+
+**Developer Escalation:**
+- Ask Orchestrator `/ask` when: Multi-practice impact unclear OR depends on unfinished task
+- Use `/delegate` when: Blocker affecting 2+ practices
+
+**When These Thresholds Matter:**
+- Orchestrator: Decides if 2 blockers = escalate to GitHub
+- Product Manager: Decides if 15% scope change = refinement or rejection
+- Tester: Decides if coverage of 78% = block PR or acceptable
+- Developer: Decides if multi-practice work = escalate to Orchestrator
+
 ### 1. Be Specific
 
 **❌ Bad Prompt:**
@@ -451,6 +533,101 @@ Review the schema migration and tests
 @developer
 Fix the issues mentioned in the review
 ```
+
+---
+
+## Tool Interaction Patterns
+
+Learn how agents communicate using Copilot CLI tools:
+
+### Pattern 1: Developer ↔ Orchestrator via `/ask`
+
+Use this when a developer is uncertain about approach:
+
+```
+@developer
+I'm implementing the inventory subscription, but I'm not sure if this
+should live in Practice 2 or Practice 3.
+
+/ask
+Where should this be implemented? Multi-practice impact?
+```
+
+**→ Orchestrator responds** with recommendation, then:
+
+```
+@developer
+Based on Orchestrator's advice, implementing in Practice 3...
+```
+
+### Pattern 2: Tester ↔ Developer via `/ask`
+
+Use this when tester finds issues:
+
+```
+@tester
+I'm seeing flaky tests in the cache update logic. 
+
+/ask
+@developer: What's the root cause? Is this a race condition?
+```
+
+**→ Developer responds** with explanation and fix suggestion.
+
+### Pattern 3: Escalation via `/delegate`
+
+Use this when work exceeds thresholds:
+
+**Orchestrator escalates**:
+```
+2 concurrent blockers detected.
+
+/delegate
+This work has 2+ concurrent blockers affecting Practices 1 & 3.
+Cannot proceed without external help.
+```
+
+**Developer escalates**:
+```
+This change affects Practices 1, 2, and 3 simultaneously.
+
+/delegate
+Multi-practice architectural decision needed.
+```
+
+### Pattern 4: All Agents Use `/diff` Before Commit
+
+Always validate changes before pushing:
+
+```
+@developer
+I've implemented the activity.
+
+/diff
+Review my changes before I commit.
+```
+
+### Pattern 5: All Agents Use `/review` For Validation
+
+Get automated code quality checks:
+
+```
+@developer
+Here's my implementation.
+
+/review
+Check for bugs, type errors, and performance issues.
+```
+
+### Tool Usage by Agent
+
+| Agent | Primary Commands | When to Use |
+|-------|---|---|
+| **Orchestrator** | `/plan`, `/ask`, `/delegate` | Starting complex work, unblocking, escalating |
+| **Developer** | `/lsp`, `/diff`, `/plan` | Navigating code, validating, planning impl |
+| **Tester** | `/plan`, `/ask`, `/diff` | Planning tests, clarifying, validating |
+| **Reviewer** | `/review`, `/diff`, `/lsp` | Validating code, exploring, reviewing |
+| **Product Manager** | `/ask`, `/plan` | Clarifying, planning requirements |
 
 ---
 
@@ -728,13 +905,28 @@ Can you:
 ## Next Steps
 
 1. **Read Agent Documentation**: Open `.copilot/agents/` and read each role
-2. **Try a Simple Feature**: Use the workflow above to implement something small
-3. **Iterate**: Refine your prompts based on results
-4. **Teach Others**: Share what you learned with teammates
+2. **Review Meta-Agent Collaboration Guide**: See [`.copilot/agents/README.md`](../.copilot/agents/README.md) for advanced multi-agent workflows
+3. **Try a Simple Feature**: Use the workflow above to implement something small
+4. **Iterate**: Refine your prompts based on results
+5. **Teach Others**: Share what you learned with teammates
+
+## Advanced: Meta-Agent Collaboration Guide
+
+For sophisticated multi-agent workflows, escalation decision trees, and model coordination, see:
+
+**[`.copilot/agents/README.md`](../.copilot/agents/README.md)**
+
+This advanced guide includes:
+- Complete communication flow diagram
+- CLI commands matrix (which agent uses which commands)
+- 3 real-world cross-agent scenarios with exact command sequences
+- Model override coordination policy
+- Full escalation matrix with decision trees
 
 ## Resources
 
 - **Agent Documentation**: `.copilot/agents/[agent-name].md`
+- **Meta-Agent Collaboration**: `.copilot/agents/README.md` (advanced multi-agent workflows)
 - **Build/Test Commands**: `.github/copilot-instructions.md`
 - **Architecture Overview**: `DESIGN.md`
 - **Interview Context**: `about-me.md`
