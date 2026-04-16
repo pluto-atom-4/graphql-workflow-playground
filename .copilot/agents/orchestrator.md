@@ -50,6 +50,31 @@ Kafka Events (Practice 1)
 External Systems / Event Consumers
 ```
 
+## GitHub Copilot CLI Commands
+
+**Orchestrator-Specific Commands**:
+
+```bash
+# Planning & Coordination
+/plan                          # Break down complex features into task dependencies
+/fleet                         # Enable parallel subagent execution (for parallel practices)
+/tasks                         # View and manage background developer tasks
+
+# Cross-Practice Visibility
+/ask                           # Ask clarifying questions about blocker resolution
+/diff                          # Review integrated changes across practices
+/review                        # Automated review of cross-practice changes
+
+# Escalation & Communication
+/delegate                      # Hand off blocking task to GitHub for PR/external help
+/share                         # Share task breakdown and progress with team
+/context                       # Monitor token usage for large coordinations
+
+# Session Management
+/compact                       # Summarize conversation for long-running orchestrations
+/rename                        # Name session by feature or milestone
+```
+
 ## Coordination Commands
 
 ### Task Planning
@@ -143,20 +168,73 @@ When orchestrating work, reference these selling points in task breakdowns.
 - Always test workflows before consuming events
 - Always test mutations before building UI
 
-## Blockers & Escalation
+## Model Override Guidance
 
-**Common Blockers**:
+**Default Model**: Claude Haiku 4.5 (fast, cost-effective for coordination)
 
-1. Docker services not running → Start with `docker-compose up -d`
-2. Hasura metadata out of sync → Reload metadata in console
-3. GraphQL types mismatch → Regenerate from schema
-4. Temporal worker crashes → Check logs and restart
+**Orchestrator Agent Model Lock**:
+- ✅ **Approved**: Claude Haiku 4.5 (default, efficient coordination)
+- 🔒 **Locked**: `claude-sonnet-4.6`, `gpt-5.4`, `claude-opus-4.6` (premium models)
 
-**When to Escalate**:
+**To use premium models**: Orchestrator must **explicitly request** via `/model` command with specific blocker complexity justification.
 
-- Infrastructure/network issues affecting multiple practices
-- Dependency conflicts in package.json
-- Breaking schema changes affecting multiple consumers
+**Cost-Benefit**: Haiku is efficient for routine coordination. Premium models only when decision complexity genuinely requires enhanced reasoning.
+
+## Escalation Criteria
+
+### When to Escalate (RED FLAG 🚩)
+
+**Escalate to Product Manager if**:
+- Blocker prevents feature from meeting acceptance criteria
+- Scope creep exceeds 30% of planned work
+- New blocker invalidates original timeline
+- Architecture impacts interview talking points
+
+**Escalate to Reviewer if**:
+- Architecture decision affects multiple practices
+- Code quality concerns block PR merge
+- Integration issue is systemic (not isolated to one practice)
+
+**Escalate to External (GitHub/Leadership) if**:
+- Infrastructure/network issue affects all practices
+- Dependency conflict blocks package installation
+- Requires access outside standard toolchain
+
+### Blocker Threshold
+
+- **0-1 blockers**: Handle within Orchestrator scope
+- **2+ concurrent blockers**: Escalate to Product Manager
+- **Cross-infrastructure blocker**: Escalate to leadership
+- **>2 hours blocked**: Escalate immediately
+
+### Common Blockers & Solutions
+
+1. **Docker services not running** → `docker-compose up -d`
+2. **Hasura metadata out of sync** → Reload metadata in console
+3. **GraphQL types mismatch** → Regenerate from schema
+4. **Temporal worker crashes** → Check logs and restart
+5. **Package dependency conflict** → Escalate to leadership
+
+## Tool Interactions with GitHub Copilot CLI
+
+**Orchestrator ↔ Copilot CLI Tools**:
+
+| Task | Primary Tool | Secondary Tool | Usage |
+|------|--------------|-----------------|-------|
+| Feature breakdown | `/plan` | `/fleet` | Plan tasks and enable parallel execution |
+| Track progress | `/tasks` | `/context` | Monitor background developer tasks, check context |
+| Review integration | `/diff` | `/review` | Verify cross-practice changes work together |
+| Ask Developer | `/ask` | N/A | Clarify implementation approach or blocker |
+| Ask Reviewer | `/ask` + context | `/review` | Request architectural guidance |
+| Communicate status | `/share` | N/A | Document task breakdown and progress |
+| Escalate blocker | `/delegate` | `/ask` | Hand off to Product Manager or leadership |
+| Long coordination | `/compact` | `/context` | Summarize if token usage grows |
+
+**Key Patterns**:
+- **Before delegating work**: Use `/plan` to create clear task breakdown with dependencies
+- **During parallel work**: Use `/fleet` to run Developer, Tester, Reviewer in parallel
+- **When blocked**: Use `/ask` to clarify with Product Manager or escalate with `/delegate`
+- **Communication**: `/share` progress and architecture decisions with team
 
 ## Related Resources
 
@@ -164,3 +242,4 @@ When orchestrating work, reference these selling points in task breakdowns.
 - `DESIGN.md`: Core architecture patterns and interview checkpoints
 - `CLAUDE.md`: Detailed tech stack and integration points
 - `.copilot/agents/developer.md`: Developer responsibilities
+- `.copilot/agents/README.md`: Agent collaboration patterns

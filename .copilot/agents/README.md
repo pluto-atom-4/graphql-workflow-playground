@@ -273,7 +273,99 @@ Tester: "Verify integration works"
 
 ---
 
-## Best Practices by Role
+## Meta-Agent Collaboration Model
+
+### How Agents Work Together
+
+All five agents use GitHub Copilot CLI commands to coordinate and communicate:
+
+#### Communication Flow
+
+```
+Product Manager (defines requirements)
+    ↓ /share: requirements & acceptance criteria
+Orchestrator (plans work breakdown)
+    ↓ /plan: task list with dependencies
+Developer (implements feature)
+    ↓ /diff + /review: shows changes
+Tester (validates completeness)
+    ↓ /share: test results & coverage
+Reviewer (ensures quality)
+    ↓ approval/request changes
+Orchestrator (marks done)
+```
+
+#### Copilot CLI Commands by Agent
+
+| Command | Developer | Orchestrator | Product Manager | Reviewer | Tester |
+|---------|-----------|---|---|---|---|
+| `/plan` | ✅ Design | ✅ Breaking down | ✅ Requirements | ⭕ Review plan | ✅ Test strategy |
+| `/diff` | ✅ Review changes | ⭕ Integration | ⭕ Verify impl | ✅ **PRIMARY** | ⭕ Coverage check |
+| `/review` | ⭕ Auto-review | ⭕ Architecture | ⭕ Feature check | ✅ **PRIMARY** | ✅ Test quality |
+| `/ask` | ✅ Clarify | ✅ **PRIMARY** | ✅ **PRIMARY** | ✅ Questions | ✅ Clarify |
+| `/share` | ⭕ Optional | ✅ Progress | ✅ **PRIMARY** | ✅ Feedback | ✅ Results |
+| `/delegate` | ⭕ Escalate | ✅ **PRIMARY** | ✅ Escalate | ✅ Escalate | ✅ Escalate |
+| `/lsp` | ✅ Debugging | ⭕ N/A | ⭕ N/A | ✅ Code intel | ✅ Test debug |
+| `/tasks` | ⭕ View only | ✅ **PRIMARY** | ⭕ View | ⭕ View only | ⭕ View only |
+
+**Legend**: ✅ Primary use | ⭕ Secondary use | (blank) Rarely used
+
+#### Cross-Agent Scenarios
+
+**Scenario 1: New Feature Request**
+```
+1. Product Manager: /plan → Define requirements
+2. Product Manager: /share → Send to Orchestrator
+3. Orchestrator: /plan → Break into tasks
+4. Orchestrator: /delegate → Send to Developer
+5. Developer: /diff + /review → Self-check before pushing
+6. Tester: /plan → Design test strategy
+7. Reviewer: /diff + /review → Code review
+8. Orchestrator: Mark done → /share final status
+```
+
+**Scenario 2: Cross-Practice Integration Issue**
+```
+1. Tester: /ask → "Why is Practice 2 → Practice 3 failing?"
+2. Developer: /diff → Show root cause
+3. Orchestrator: /ask → Clarify if blocking merge
+4. Reviewer: /review → Architectural assessment
+5. Orchestrator: /delegate → If needs leadership input
+```
+
+**Scenario 3: Blocked by Test Failures**
+```
+1. Tester: /plan → Design test fix
+2. Developer: /ask → "Should I fix implementation or test?"
+3. Reviewer: /ask → "Does this follow test patterns?"
+4. Orchestrator: /tasks → Track blocker resolution
+5. Tester: Verify fix + /share results
+```
+
+#### Model Override Coordination
+
+Each agent has **locked model** (Haiku by default):
+- ✅ Developer uses Haiku only (unless explicitly requested via `/model`)
+- ✅ Orchestrator uses Haiku only (unless explicitly requested)
+- ✅ Product Manager uses Haiku only (unless explicitly requested)
+- ✅ Reviewer uses Haiku only (unless explicitly requested)
+- ✅ Tester uses Haiku only (unless explicitly requested)
+
+**Override Pattern**: Agent requests premium model via `/model` with explicit justification (e.g., "Complex architectural decision requiring gpt-5.4").
+
+#### Tool Escalation Matrix
+
+**Who calls whom?**
+
+- **Developer → Orchestrator**: Blocked by multi-practice dependencies (`/ask`)
+- **Developer → Reviewer**: Architecture question before implementing (`/ask`)
+- **Orchestrator → Product Manager**: Scope creep or feasibility concern (`/ask`)
+- **Orchestrator → Leadership**: Infrastructure blocker (`/delegate`)
+- **Tester → Developer**: Test failure root cause (`/ask`)
+- **Tester → Orchestrator**: Performance or flaky test blocker (`/delegate`)
+- **Reviewer → Orchestrator**: Architectural concern affecting architecture (`/delegate`)
+
+---
 
 ### Developer
 

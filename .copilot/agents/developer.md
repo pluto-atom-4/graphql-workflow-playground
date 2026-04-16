@@ -36,7 +36,35 @@ The Developer Agent is responsible for implementing code changes, writing featur
 - Apollo Client: Optimistic updates with `__typename` normalization
 - Retry policies: Exponential backoff for database operations
 
-## Commands
+## GitHub Copilot CLI Commands
+
+When implementing features or fixing bugs, use these GitHub Copilot CLI commands:
+
+```bash
+# Planning & Architecture
+/plan                          # Create implementation plan before coding
+/ask                           # Ask clarifying questions without changing context
+
+# Code Review & Quality
+/diff                          # Review changes before committing
+/review                        # Run automated code review on changes
+/lsp                           # Access language server for code intelligence
+
+# Development & Debugging
+/ide                           # Connect to IDE workspace for better integration
+/terminal-setup                # Configure terminal for multiline input
+
+# Task Management
+/tasks                         # View and manage background tasks
+/delegate                      # Send work to GitHub for PR creation
+
+# Session Management
+/context                       # Check token usage before large changes
+/compact                       # Summarize conversation if context grows
+/share                         # Share implementation approach with team
+```
+
+## CLI Development Commands
 
 ```bash
 # Navigate to practice folder
@@ -59,6 +87,18 @@ pnpm format                    # Format code with Prettier
 pnpm format:check              # Check without changes
 ```
 
+## Model Override Guidance
+
+**Default Model**: Claude Haiku 4.5 (configured in `.copilot/config.json`)
+
+**Developer Agent Model Lock**:
+- ✅ **Approved**: Claude Haiku 4.5 (default, fast)
+- 🔒 **Locked**: `gpt-5.4`, `claude-sonnet-4.6`, `claude-opus-4.6` (premium models)
+
+**To use premium models**: Developer must **explicitly request** via `/model` command with specific justification. Orchestrator or Product Manager approval may be required for cost-intensive tasks.
+
+**Cost Consideration**: Haiku is optimized for routine implementation; escalate to Orchestrator if premium reasoning is truly needed.
+
 ## Best Practices
 
 1. **TypeScript**: Always use strict mode; avoid `any` types
@@ -67,6 +107,8 @@ pnpm format:check              # Check without changes
 4. **React Components**: Use Server Components for data fetching, Client Components for interactivity
 5. **Testing**: Write tests before or alongside implementation
 6. **Commits**: Include descriptive messages; reference related issues
+7. **Use `/diff` Before Committing**: Always review changes before pushing
+8. **Use `/review` for New Code**: Automated review catches edge cases
 
 ## Docker Services
 
@@ -95,6 +137,27 @@ When implementing features, keep real-world constraints in mind:
 - GraphQL subscriptions must handle real-time shop-floor sensor data
 - Apollo Client optimistic updates critical for poor WiFi conditions
 - Kafka events enable async communication at scale
+
+## Tool Interactions with GitHub Copilot CLI
+
+**Developer ↔ Copilot CLI Tools**:
+
+| Task | Tool | Usage |
+|------|------|-------|
+| Start new feature | `/plan` | Create task breakdown before coding |
+| Code implementation | Editor + LSP | Write code with language server support |
+| Verify changes | `/diff` | Review all changes before commit |
+| Quality check | `/review` | Automated code review on changes |
+| Cross-practice impact | `/ask` | Clarify dependencies with Orchestrator context |
+| Debug failing test | `/lsp` | Use language server diagnostics |
+| Share implementation | `/share` | Document approach for Reviewer/Orchestrator |
+| Commit changes | Git | Include Co-authored-by trailer (see CLAUDE.md) |
+
+**When to Escalate**:
+- Architectural concerns → `/ask` Orchestrator
+- Code review feedback → Wait for Reviewer agent
+- Multi-practice impacts → Alert Orchestrator
+- Test failures blocking progress → Call Tester agent
 
 ## Related Resources
 
