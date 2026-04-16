@@ -8,16 +8,16 @@ Welcome to the graphql-workflow-playground! This project uses **Copilot agents**
 
 These commands accelerate your workflow. Use them throughout development:
 
-| Command | What It Does | Example |
-|---------|---|---|
-| **`/plan`** | Create implementation plan | `/plan` → Break down a complex feature |
-| **`/diff`** | Review changes before commit | `/diff` → Check your code changes |
-| **`/review`** | Automated code review | `/review` → Find bugs automatically |
-| **`/ask`** | Ask clarifying questions | `/ask` → Unblock without losing context |
-| **`/delegate`** | Escalate to GitHub PR | `/delegate` → Send blocker to GitHub |
-| **`/lsp`** | Language server (go-to-def, refactor) | `/lsp` → Navigate large codebase |
-| **`/tasks`** | View background operations | `/tasks` → Monitor long-running work |
-| **`/fleet`** | Run agents in parallel | `/fleet` → Orchestrator uses to run agents |
+| Command         | What It Does                          | Example                                    |
+| --------------- | ------------------------------------- | ------------------------------------------ |
+| **`/plan`**     | Create implementation plan            | `/plan` → Break down a complex feature     |
+| **`/diff`**     | Review changes before commit          | `/diff` → Check your code changes          |
+| **`/review`**   | Automated code review                 | `/review` → Find bugs automatically        |
+| **`/ask`**      | Ask clarifying questions              | `/ask` → Unblock without losing context    |
+| **`/delegate`** | Escalate to GitHub PR                 | `/delegate` → Send blocker to GitHub       |
+| **`/lsp`**      | Language server (go-to-def, refactor) | `/lsp` → Navigate large codebase           |
+| **`/tasks`**    | View background operations            | `/tasks` → Monitor long-running work       |
+| **`/fleet`**    | Run agents in parallel                | `/fleet` → Orchestrator uses to run agents |
 
 **Most Important**: Use `/plan` to start complex work, `/diff` before git push, `/review` before merging.
 
@@ -28,11 +28,13 @@ These commands accelerate your workflow. Use them throughout development:
 **Default**: Claude Haiku 4.5 (fast, cost-efficient) ✅
 
 **Premium Models** (require explicit `/model` + justification):
+
 - `gpt-5.4` — Complex multi-practice architecture
 - `claude-sonnet-4.6` — Large codebase analysis
 - `claude-opus-4.6` — Emergency high-complexity debugging
 
 **How to use**:
+
 ```
 /model claude-sonnet-4.6
 
@@ -392,30 +394,36 @@ Then: `@tester` writes tests, `@reviewer` checks quality.
 Each agent has specific thresholds for when to escalate or seek help:
 
 **Orchestrator Escalation Thresholds:**
+
 - Handle: 0–1 concurrent blockers
 - Escalate: 2+ concurrent blockers OR work blocked >2 hours
 - Use `/delegate` to escalate to GitHub
 
 **Product Manager Escalation Thresholds:**
+
 - Approve: 0–10% scope creep (feature aligned)
 - Review & Refine: 10–30% scope creep (borderline)
 - Restart Planning: >30% scope creep (too far off target)
 
 **Tester Approval Thresholds:**
+
 - Block PR: <80% code coverage (non-negotiable)
 - Report Issue: Tests <95% reliable (flaky tests)
 - Escalate: Any test >5 seconds (performance blocker)
 
 **Reviewer Block Criteria:**
+
 - Block: Critical bugs, security issues, type errors
 - Request Changes: Missing error handling, unsafe patterns
 - Approve: Style issues, minor improvements
 
 **Developer Escalation:**
+
 - Ask Orchestrator `/ask` when: Multi-practice impact unclear OR depends on unfinished task
 - Use `/delegate` when: Blocker affecting 2+ practices
 
 **When These Thresholds Matter:**
+
 - Orchestrator: Decides if 2 blockers = escalate to GitHub
 - Product Manager: Decides if 15% scope change = refinement or rejection
 - Tester: Decides if coverage of 78% = block PR or acceptable
@@ -566,7 +574,7 @@ Use this when tester finds issues:
 
 ```
 @tester
-I'm seeing flaky tests in the cache update logic. 
+I'm seeing flaky tests in the cache update logic.
 
 /ask
 @developer: What's the root cause? Is this a race condition?
@@ -579,6 +587,7 @@ I'm seeing flaky tests in the cache update logic.
 Use this when work exceeds thresholds:
 
 **Orchestrator escalates**:
+
 ```
 2 concurrent blockers detected.
 
@@ -588,6 +597,7 @@ Cannot proceed without external help.
 ```
 
 **Developer escalates**:
+
 ```
 This change affects Practices 1, 2, and 3 simultaneously.
 
@@ -621,13 +631,13 @@ Check for bugs, type errors, and performance issues.
 
 ### Tool Usage by Agent
 
-| Agent | Primary Commands | When to Use |
-|-------|---|---|
-| **Orchestrator** | `/plan`, `/ask`, `/delegate` | Starting complex work, unblocking, escalating |
-| **Developer** | `/lsp`, `/diff`, `/plan` | Navigating code, validating, planning impl |
-| **Tester** | `/plan`, `/ask`, `/diff` | Planning tests, clarifying, validating |
-| **Reviewer** | `/review`, `/diff`, `/lsp` | Validating code, exploring, reviewing |
-| **Product Manager** | `/ask`, `/plan` | Clarifying, planning requirements |
+| Agent               | Primary Commands             | When to Use                                   |
+| ------------------- | ---------------------------- | --------------------------------------------- |
+| **Orchestrator**    | `/plan`, `/ask`, `/delegate` | Starting complex work, unblocking, escalating |
+| **Developer**       | `/lsp`, `/diff`, `/plan`     | Navigating code, validating, planning impl    |
+| **Tester**          | `/plan`, `/ask`, `/diff`     | Planning tests, clarifying, validating        |
+| **Reviewer**        | `/review`, `/diff`, `/lsp`   | Validating code, exploring, reviewing         |
+| **Product Manager** | `/ask`, `/plan`              | Clarifying, planning requirements             |
 
 ---
 
@@ -917,6 +927,7 @@ For sophisticated multi-agent workflows, escalation decision trees, and model co
 **[`.copilot/agents/README.md`](../.copilot/agents/README.md)**
 
 This advanced guide includes:
+
 - Complete communication flow diagram
 - CLI commands matrix (which agent uses which commands)
 - 3 real-world cross-agent scenarios with exact command sequences

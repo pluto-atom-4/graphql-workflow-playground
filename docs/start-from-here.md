@@ -1,5 +1,11 @@
 # Research: Boltline by Stoke Space
 
+## Quick Start for Contributors
+
+⚠️ **Before you start coding**: Review the **[Code Quality Standards](./../.copilot/agents/quality-assurance.md)** to understand the QA requirements (ESLint, Prettier, npm audit) that all code must pass.
+
+---
+
 ## Phone Screening Interview Preparation
 
 You will have a phone screening interview this Wednesday for the position of **Senior Full Stack Software Developer**. Boltline is the commercial platform by Stoke Space.
