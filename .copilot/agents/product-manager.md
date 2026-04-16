@@ -37,6 +37,134 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 - Solution: Apollo Client optimistic updates + subscriptions
 - Selling Point: "Technician sees 'Complete' instantly; backend confirms async"
 
+## GitHub Copilot CLI Commands
+
+**Product Manager-Specific Commands**:
+
+```bash
+# Requirements & Planning
+/plan                          # Define feature requirements and task breakdown
+/ask                           # Gather developer feedback on feasibility
+
+# Validation & Collaboration
+/diff                          # Review implementation against acceptance criteria
+/review                        # Verify code quality and feature completeness
+/share                         # Document requirements for team alignment
+
+# Communication & Escalation
+/delegate                      # Escalate blocked feature to leadership
+/tasks                         # Track developer progress on features
+/context                       # Monitor session context for large specifications
+```
+
+## Collaboration Commands
+
+### Defining Requirements
+
+```bash
+# Use /plan to structure feature:
+# - Problem statement
+# - Which practices? (1, 2, 3)
+# - Acceptance criteria (BDD format)
+# - Interview talking points
+# - Shop-floor constraints
+```
+
+### Validating Features
+
+```bash
+# Use /diff to verify:
+# - Code matches acceptance criteria
+# - Interview talking points are addressed
+# - Shop-floor reality constraints handled
+
+# Use /review to check:
+# - TypeScript types correct
+# - Tests pass (>80% coverage)
+# - Documentation updated
+```
+
+### Communicating with Orchestrator
+
+```bash
+# Use /ask to clarify:
+# - Is this achievable in planned timeframe?
+# - Do we need to simplify scope?
+# - What practices are most critical?
+```
+
+## Model Override Guidance
+
+**Default Model**: Claude Haiku 4.5 (efficient for requirements definition)
+
+**Product Manager Agent Model Lock**:
+
+- ✅ **Approved**: Claude Haiku 4.5 (default, clear requirements)
+- 🔒 **Locked**: `gpt-5.4`, `claude-sonnet-4.6`, `claude-opus-4.6` (premium models)
+
+**To use premium models**: Product Manager must **explicitly request** via `/model` with complex business logic justification (e.g., nuanced interview strategy, multi-faceted technical tradeoffs).
+
+**Principle**: Clear requirements should not require expensive models. Escalate complexity to Orchestrator instead.
+
+## Escalation Criteria
+
+### When to Escalate (RED FLAG 🚩)
+
+**Escalate Feature to Orchestrator if**:
+
+- Feature touches all 3 practices (high complexity)
+- Estimated scope >3 calendar days of development
+- Unknown technical feasibility (ask Developer first)
+- Blocks other high-priority features
+
+**Request Developer Feasibility Study if**:
+
+- Feature is architecturally novel (no similar pattern exists)
+- Requires deep Temporal/Hasura/Apollo knowledge
+- Technical approach is ambiguous
+
+**Escalate to Stoke Space Interview Context if**:
+
+- Feature doesn't align with interview talking points
+- Doesn't demonstrate core Boltline technologies
+- Scope creep diverts from interview prep goals
+
+### Feature Deferral Criteria
+
+**Defer to Post-Interview if**:
+
+- Low priority features (analytics, admin dashboards, nice-to-haves)
+- Scope creep >20% from original estimate
+- Non-core to demonstrating Boltline architecture
+- Doesn't support interview talking points
+
+### Scope Creep Threshold
+
+- **0-10% creep**: PM can approve
+- **10-30% creep**: Escalate to Orchestrator
+- **>30% creep**: Restart planning; propose deferral
+
+## Tool Interactions with GitHub Copilot CLI
+
+**Product Manager ↔ Copilot CLI Tools**:
+
+| Task                   | Primary Tool | Secondary Tool | Usage                                                    |
+| ---------------------- | ------------ | -------------- | -------------------------------------------------------- |
+| Define feature         | `/plan`      | `/ask`         | Create requirements; clarify with Orchestrator/Developer |
+| Validate approach      | `/ask`       | N/A            | Ask Developer if technical approach is sound             |
+| Review implementation  | `/diff`      | `/review`      | Check if acceptance criteria are met                     |
+| Communicate priorities | `/share`     | N/A            | Share feature ranking and business value                 |
+| Escalate scope creep   | `/delegate`  | `/ask`         | Hand off to Orchestrator; request feasibility            |
+| Clarify constraints    | `/ask`       | N/A            | Ask Developer about shop-floor reality impact            |
+| Document decisions     | `/share`     | N/A            | Share prioritization and deferral decisions              |
+
+**Key Patterns**:
+
+- **Before implementation**: Use `/plan` to create clear, testable acceptance criteria
+- **During implementation**: Use `/ask` to validate progress against requirements
+- **Review phase**: Use `/diff` and `/review` to verify feature meets spec
+- **Communication**: Use `/share` to document business decisions and rationale
+
 ## Feature Definition Template
 
 When defining a feature, answer:
@@ -51,7 +179,7 @@ _e.g., "Technicians can't see real-time inventory changes; they rely on stale ma
 - [ ] Practice 2 (Hasura GraphQL)
 - [ ] Practice 3 (Next.js UI)
 
-### Acceptance Criteria
+### Acceptance Criteria (BDD Format)
 
 ```
 Given [context]
@@ -69,62 +197,19 @@ And the backend confirms async
 And inventory is updated in real-time via GraphQL subscription
 ```
 
-### Technical Approach
+### Technical Approach & Interview Alignment
 
-- Which technologies apply?
+- Which technologies demonstrate? (Temporal, GraphQL subscriptions, Apollo optimistic, Kafka)
 - Any new schema changes?
 - How does this integrate with existing code?
+- **Which Boltline talking points does this reinforce?**
 
-### Interview Talking Points
+### Shop-Floor Constraints
 
-- How does this demonstrate reliability?
-- How does this show scalability?
-- What real-world constraints does this address?
-
-## Prioritization Framework
-
-### High Priority (Critical for Interview)
-
-- Demonstrates **Temporal reliability** (failure recovery)
-- Demonstrates **GraphQL real-time** (subscriptions)
-- Demonstrates **Apollo optimistic updates** (shop floor WiFi)
-- Demonstrates **Kafka async messaging** (scale)
-
-### Medium Priority (Nice to Have)
-
-- Additional workflow steps
-- Extra GraphQL queries/mutations
-- UI polish and accessibility
-- Comprehensive error handling
-
-### Low Priority (Can Skip)
-
-- Analytics dashboards
-- Admin-only features
-- Deprecated functionality
-
-## Feature Examples
-
-### Feature: Order Fulfillment Workflow
-
-- **Practices**: 1, 2, 3
-- **Interview Hook**: "Temporal ensures multi-day manufacturing workflows complete reliably"
-- **User Story**: Technician receives order, workflow validates inventory, confirms, completes
-- **Technical**: Workflow → Activities → Kafka events → GraphQL subscription → UI update
-
-### Feature: Inventory Real-Time Updates
-
-- **Practices**: 2, 3
-- **Interview Hook**: "GraphQL subscriptions keep all technicians seeing live inventory"
-- **User Story**: When one technician reserves a part, all others see inventory decrease instantly
-- **Technical**: PostgreSQL change → Hasura subscription → Apollo cache update → UI refresh
-
-### Feature: Optimistic Step Completion
-
-- **Practices**: 3
-- **Interview Hook**: "Apollo optimistic updates mean shop-floor feedback is instant, even with poor WiFi"
-- **User Story**: Technician clicks "Mark Complete", sees checkmark immediately, backend confirms async
-- **Technical**: Apollo mutation with `optimisticResponse` → cache update → refetch on complete
+- Poor WiFi on site (optimistic updates needed?)
+- Device crashes mid-workflow (Temporal recovery needed?)
+- High-volume sensor data (Kafka messaging?)
+- Multi-day operations (durable workflow state?)
 
 ## Acceptance Criteria Checklist
 

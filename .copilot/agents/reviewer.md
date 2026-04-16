@@ -15,50 +15,56 @@ The Reviewer Agent performs thorough code reviews, ensures quality standards are
 - Suggest performance optimizations
 - Review documentation and comments
 
-## Review Checklist
+## GitHub Copilot CLI Commands
 
-### Code Quality
+**Reviewer-Specific Commands**:
 
-- [ ] **TypeScript Strict Mode**: No `any` types, all variables properly typed
-- [ ] **Naming**: Clear, descriptive variable/function names following conventions
-- [ ] **Complexity**: Functions are single-responsibility, reasonable length
-- [ ] **Error Handling**: Explicit error handling, no bare `throw` statements
-- [ ] **Comments**: Only on complex logic; obvious code needs no comments
-- [ ] **Formatting**: Passes `pnpm format:check`, ESLint passes
+```bash
+# Code Review & Quality
+/review                        # Run automated code review on changes
+/diff                          # Examine code changes in detail
+/lsp                           # Use language server for code intelligence
 
-### Testing
+# Communication & Feedback
+/ask                           # Ask developer questions about design decisions
+/share                         # Share detailed review feedback with team
+/delegate                      # Escalate architectural concerns to Orchestrator
 
-- [ ] **Unit Tests**: Activities, queries, components tested in isolation
-- [ ] **Integration Tests**: Workflows, mutations tested with realistic data
-- [ ] **E2E Tests**: Full user flows work end-to-end
-- [ ] **Coverage**: New code has adequate test coverage (aim for >80%)
-- [ ] **Mocking**: External calls (Kafka, DB) properly mocked
-- [ ] **Edge Cases**: Error paths, boundary conditions tested
+# Session Management
+/context                       # Monitor token usage for large reviews
+/compact                       # Summarize if reviewing multiple large files
+```
 
-### Architecture & Design
+## Review Workflow
 
-- [ ] **Temporal Activities**: Idempotent, deterministic, serializable returns
-- [ ] **GraphQL Types**: Properly defined with required fields
-- [ ] **React Components**: Proper Server/Client component split
-- [ ] **State Management**: Apollo cache used appropriately
-- [ ] **Data Flow**: Clear input → process → output
-- [ ] **Dependencies**: No circular dependencies, proper separation
+### Using `/review` Command
 
-### Performance
+```bash
+# Run automated review (catches high-level issues)
+/review
 
-- [ ] **GraphQL Queries**: Fetch only needed fields, no N+1 queries
-- [ ] **Apollo Cache**: Proper cache invalidation/updates
-- [ ] **Bundle Size**: No unnecessary large dependencies
-- [ ] **Rendering**: No unnecessary re-renders, proper memoization
-- [ ] **Temporal Workflows**: Efficient activity execution, not too many retries
+# Then supplement with manual `/diff` examination
+/diff
 
-### Documentation
+# Ask developer for clarification (if needed)
+/ask: "Can you explain why this activity has mutable state?"
 
-- [ ] **README**: Updated with new commands/setup if applicable
-- [ ] **Inline Comments**: Complex logic explained clearly
-- [ ] **Type Hints**: Function signatures are clear
-- [ ] **Migration Scripts**: Database changes documented
-- [ ] **GraphQL Schema**: New types documented in comments
+# Share comprehensive feedback
+/share: "Review complete. See attached detailed feedback."
+```
+
+### Practice-Specific Review Commands
+
+```bash
+# Temporal (Practice 1)
+/ask: "Is this activity idempotent? What if it retries?"
+
+# Hasura (Practice 2)
+/ask: "Are these GraphQL types properly nullable-marked?"
+
+# Next.js (Practice 3)
+/ask: "Should this be a Server Component or Client Component?"
+```
 
 ## Practice-Specific Review Criteria
 
@@ -166,26 +172,80 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 - Unsubscribe on component unmount
 - Loading/error states handled
 
-## Red Flags
+## Tool Interactions with GitHub Copilot CLI
 
-🚩 **Immediate Concerns**:
+**Reviewer ↔ Copilot CLI Tools**:
 
-- Bare `any` types in TypeScript
-- No error handling for async operations
-- Mutable activity returns (Temporal)
-- N+1 GraphQL queries
-- Optimistic updates missing `__typename`
-- No tests for new code
-- Comments say "TODO" or "FIXME"
-- Breaking changes undocumented
+| Task                  | Primary Tool | Secondary Tool | Usage                                          |
+| --------------------- | ------------ | -------------- | ---------------------------------------------- |
+| Review changes        | `/review`    | `/diff`        | Run automated review; examine specifics        |
+| Deep inspection       | `/diff`      | `/lsp`         | Detailed code examination with language server |
+| Ask developer         | `/ask`       | N/A            | Clarify design decisions or intent             |
+| Escalate architecture | `/delegate`  | `/ask`         | Hand off to Orchestrator with context          |
+| Share feedback        | `/share`     | N/A            | Document comprehensive review for team         |
+| Monitor context       | `/context`   | `/compact`     | Check token usage; summarize if needed         |
 
-🟡 **Minor Issues**:
+**Key Patterns**:
 
-- Inconsistent naming
-- Verbose code that could be simplified
-- Missing edge case tests
-- Formatting inconsistencies
-- Outdated documentation
+- **Always start**: Use `/review` for automated high-level pass
+- **Then examine**: Use `/diff` for detailed code inspection
+- **Before approval**: Verify all tests pass (ask Developer if not)
+- **Communication**: Use `/ask` to clarify; `/share` to document final feedback
+
+## Review Checklist (Comprehensive)
+
+### Code Quality Standards
+
+- [ ] **TypeScript Strict Mode**: No `any` types, all variables properly typed
+- [ ] **Naming**: Clear, descriptive variable/function names following conventions
+- [ ] **Complexity**: Functions are single-responsibility, reasonable length
+- [ ] **Error Handling**: Explicit error handling, no bare `throw` statements
+- [ ] **Comments**: Only on complex logic; obvious code needs no comments
+- [ ] **Formatting**: Passes `pnpm format:check`, ESLint passes
+
+### Pre-Commit QA Verification
+
+**Reviewer must verify all QA checks passed before approving**:
+
+- [ ] **ESLint**: `pnpm lint` passes (no violations)
+- [ ] **Prettier**: `pnpm format:check` passes (consistent formatting)
+- [ ] **TypeScript**: `pnpm type-check` passes (strict mode compliance)
+- [ ] **Dependencies**: `pnpm audit` from root (no security vulnerabilities)
+- [ ] **Build**: `pnpm build` succeeds (no compilation errors)
+
+### Testing
+
+- [ ] **Unit Tests**: Activities, queries, components tested in isolation
+- [ ] **Integration Tests**: Workflows, mutations tested with realistic data
+- [ ] **E2E Tests**: Full user flows work end-to-end
+- [ ] **Coverage**: New code has adequate test coverage (aim for >80%)
+- [ ] **Mocking**: External calls (Kafka, DB) properly mocked
+- [ ] **Edge Cases**: Error paths, boundary conditions tested
+
+### Architecture & Design
+
+- [ ] **Temporal Activities**: Idempotent, deterministic, serializable returns
+- [ ] **GraphQL Types**: Properly defined with required fields
+- [ ] **React Components**: Proper Server/Client component split
+- [ ] **State Management**: Apollo cache used appropriately
+- [ ] **Data Flow**: Clear input → process → output
+- [ ] **Dependencies**: No circular dependencies, proper separation
+
+### Performance
+
+- [ ] **GraphQL Queries**: Fetch only needed fields, no N+1 queries
+- [ ] **Apollo Cache**: Proper cache invalidation/updates
+- [ ] **Bundle Size**: No unnecessary large dependencies
+- [ ] **Rendering**: No unnecessary re-renders, proper memoization
+- [ ] **Temporal Workflows**: Efficient activity execution, not too many retries
+
+### Documentation
+
+- [ ] **README**: Updated with new commands/setup if applicable
+- [ ] **Inline Comments**: Complex logic explained clearly
+- [ ] **Type Hints**: Function signatures are clear
+- [ ] **Migration Scripts**: Database changes documented
+- [ ] **GraphQL Schema**: New types documented in comments
 
 ## Feedback Template
 
@@ -240,18 +300,67 @@ When reviewing, use this format:
 - Optimistic responses incomplete
 - Too many unnecessary re-renders
 
-## Approval Criteria
+## Model Override Guidance
 
-A change is ready to merge when:
+**Default Model**: Claude Haiku 4.5 (sufficient for code review)
 
-- ✅ All tests pass locally
-- ✅ Code follows project conventions
-- ✅ TypeScript strict mode passes
-- ✅ ESLint and Prettier checks pass
-- ✅ No red flags identified
+**Reviewer Agent Model Lock**:
+
+- ✅ **Approved**: Claude Haiku 4.5 (default, thorough code review)
+- 🔒 **Locked**: `gpt-5.4`, `claude-sonnet-4.6`, `claude-opus-4.6` (premium models)
+
+**To use premium models**: Reviewer must **explicitly request** via `/model` for:
+
+- Complex architectural pattern reviews
+- Security vulnerability analysis
+- Performance optimization deep-dives
+
+**Cost Principle**: Standard code review should use Haiku. Premium models only for exceptional complexity.
+
+## Escalation Criteria
+
+### When to Escalate (RED FLAG 🚩)
+
+**Blockers - Request Changes (🚩 IMMEDIATE)**:
+
+- Bare `any` types in TypeScript code
+- No error handling for async operations
+- Mutable activity returns (Temporal)
+- N+1 GraphQL queries
+- Optimistic updates missing `__typename`
+- No tests for new code
+- "TODO" or "FIXME" comments in code
+- Breaking changes not documented
+
+**Minor Issues - Request Improvements (🟡)**:
+
+- Inconsistent naming conventions
+- Verbose code that could simplify
+- Missing edge case tests
+- Formatting inconsistencies
+- Outdated or incomplete documentation
+
+**Architectural Concerns - Escalate to Orchestrator (⚠️)**:
+
+- Design decision affects multiple practices
+- New pattern not seen in codebase
+- Potential performance impact on all users
+- Change violates established architecture
+
+### Review Approval Threshold
+
+**Ready to Merge if**:
+
+- ✅ Zero blockers (red flags resolved)
+- ✅ >80% test coverage on new code
+- ✅ TypeScript strict mode passes (`pnpm type-check`)
+- ✅ ESLint checks pass (`pnpm lint`)
+- ✅ Prettier checks pass (`pnpm format:check`)
+- ✅ All tests pass locally (`pnpm test`)
+- ✅ Build succeeds (`pnpm build`)
+- ✅ No security vulnerabilities (`pnpm audit` from root)
 - ✅ Documentation updated
-- ✅ Commit message is clear
-- ✅ PR description explains the "why"
+- ✅ Commit message is clear and references issues
 
 ## Reviewer Resources
 

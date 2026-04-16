@@ -26,25 +26,69 @@ The Tester Agent designs and executes comprehensive test strategies, ensures cod
 - **Mocking**: Jest mocks, `@apollo/client/testing`, Temporal test server
 - **Coverage**: Aim for >80% on new code
 
-## Test Commands
+## GitHub Copilot CLI Commands
 
-Run from within a practice folder:
+**Tester-Specific Commands**:
 
 ```bash
-# All tests
-pnpm test
+# Test Planning & Execution
+/plan                          # Create test strategy before implementation
+/ask                           # Clarify acceptance criteria with Product Manager
 
-# Watch mode (re-run on file change)
-pnpm test --watch
+# Test Validation & Debugging
+/diff                          # Review code changes for test coverage
+/lsp                           # Use language server for debugging test failures
+/review                        # Verify test quality and coverage
 
-# Single test file
-pnpm test src/path/to/test.ts
+# Communication & Reporting
+/share                         # Document test results and coverage reports
+/delegate                      # Escalate test failures that block merge
 
-# With coverage report
-pnpm test --coverage
+# Session Management
+/context                       # Monitor token usage for large test suites
+/compact                       # Summarize if testing multiple practices
+```
 
-# CI mode (no watch, fail on coverage)
-pnpm test --ci
+## Test Workflow
+
+### Before Implementation
+
+```bash
+# Use /plan to design test strategy
+# - Happy path tests
+# - Error case tests
+# - Edge case tests
+# - Cross-practice integration tests
+# - Real-world constraint tests (WiFi, crashes, scale)
+```
+
+### During Implementation
+
+```bash
+# Write tests alongside code (TDD approach)
+# Run unit tests: pnpm test --watch
+# Run integration tests with realistic data
+# Test with mocks for external dependencies
+
+# Verify code quality as you go:
+# - pnpm lint (catch linting errors early)
+# - pnpm format:check (catch formatting issues)
+# - pnpm type-check (catch TypeScript errors)
+```
+
+### Before PR Submission
+
+```bash
+# Verify all QA checks pass:
+pnpm lint          # ESLint must pass
+pnpm lint:fix      # Auto-fix any remaining issues
+pnpm format:check  # Prettier must pass
+pnpm type-check    # TypeScript strict mode
+pnpm test --ci     # Full test suite in CI mode
+pnpm build         # Build must succeed
+
+# Coverage check: pnpm test --coverage
+# Document test approach: /share
 ```
 
 ## Practice-Specific Test Strategies
@@ -399,14 +443,65 @@ For any feature, ask:
 - [ ] **Security**: Any data exposure, injection vulnerabilities?
 - [ ] **Integration**: Works with other practices? Async coordination correct?
 
-## Coverage Goals
+## Model Override Guidance
 
-| Area               | Target                 |
-| ------------------ | ---------------------- |
-| Activities/Queries | >90% (core logic)      |
-| Components         | >80% (UI interactions) |
-| Workflows          | >85% (orchestration)   |
-| Overall            | >80%                   |
+**Default Model**: Claude Haiku 4.5 (efficient test automation)
+
+**Tester Agent Model Lock**:
+
+- ✅ **Approved**: Claude Haiku 4.5 (default, test writing & coverage)
+- 🔒 **Locked**: `gpt-5.4`, `claude-sonnet-4.6`, `claude-opus-4.6` (premium models)
+
+**To use premium models**: Tester must **explicitly request** via `/model` for:
+
+- Complex multi-practice E2E test design
+- Performance testing strategy analysis
+- Edge case and failure mode analysis
+
+**Cost Principle**: Standard test writing uses Haiku. Premium models for exceptional complexity only.
+
+## Escalation Criteria
+
+### When to Escalate (RED FLAG 🚩)
+
+**Test Blockers - Block PR if**:
+
+- Coverage <80% on new code
+- Happy path test missing
+- Error case tests missing
+- Edge cases not covered
+- No integration test for cross-practice changes
+- Test timeouts without documentation
+
+**Performance Issues - Report to Orchestrator if**:
+
+- Single test >5 seconds
+- Full suite >2 minutes
+- Tests intermittently fail (flaky)
+- Database cleanup between tests failing
+
+**Architectural Issues - Escalate to Reviewer if**:
+
+- Test mocks don't match real behavior
+- Cross-practice integration untestable
+- Test setup is overly complex (>50 lines setup)
+
+### Test Approval Threshold
+
+**Ready for Code Review if**:
+
+- ✅ >80% coverage on new code
+- ✅ Happy path test passes
+- ✅ Error case tests pass
+- ✅ Edge cases tested and passing
+- ✅ Integration tests pass (if cross-practice)
+- ✅ No flaky/intermittent failures
+- ✅ Test suite runs <2 minutes
+- ✅ All mocks verified against reality
+- ✅ ESLint passes (`pnpm lint`)
+- ✅ Prettier formatting correct (`pnpm format:check`)
+- ✅ TypeScript strict mode passes (`pnpm type-check`)
+- ✅ Build succeeds (`pnpm build`)
 
 ## Bug Report Template
 
@@ -468,6 +563,57 @@ it("completes step in <500ms", async () => {
 - `DESIGN.md`: Architecture patterns to test against
 - `CLAUDE.md`: Technology details for test setup
 - Project source files: Existing tests as reference
+
+## Tool Interactions with GitHub Copilot CLI
+
+**Tester ↔ Copilot CLI Tools**:
+
+| Task                | Primary Tool | Secondary Tool | Usage                                         |
+| ------------------- | ------------ | -------------- | --------------------------------------------- |
+| Test strategy       | `/plan`      | `/ask`         | Plan tests; clarify acceptance criteria       |
+| Review coverage     | `/diff`      | `/review`      | Check if new code has adequate tests          |
+| Debug failures      | `/lsp`       | `/ask`         | Use language server; ask Developer if unclear |
+| Cross-practice test | `/plan`      | `/ask`         | Design integration test; clarify flows        |
+| Report results      | `/share`     | N/A            | Document coverage and test results            |
+| Performance issue   | `/delegate`  | `/ask`         | Escalate slow tests; ask Orchestrator         |
+| Block PR merge      | `/delegate`  | N/A            | If tests don't pass, block until fixed        |
+
+**Key Patterns**:
+
+- **Before implementing**: Use `/plan` to design test approach with acceptance criteria
+- **During implementation**: Write tests alongside code (TDD)
+- **Review phase**: Use `/diff` to verify coverage; report with `/share`
+- **Blockers**: Use `/delegate` to escalate failures that prevent merge
+
+## Test Commands
+
+Run from within a practice folder:
+
+```bash
+# All tests
+pnpm test
+
+# Watch mode (re-run on file change)
+pnpm test --watch
+
+# Single test file
+pnpm test src/path/to/test.ts
+
+# With coverage report
+pnpm test --coverage
+
+# CI mode (no watch, fail on coverage)
+pnpm test --ci
+```
+
+## Coverage Goals
+
+| Area               | Target                 |
+| ------------------ | ---------------------- |
+| Activities/Queries | >90% (core logic)      |
+| Components         | >80% (UI interactions) |
+| Workflows          | >85% (orchestration)   |
+| Overall            | >80%                   |
 
 ## Real-World Testing Constraints
 
