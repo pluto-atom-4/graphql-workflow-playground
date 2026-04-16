@@ -98,6 +98,7 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 **Default Model**: Claude Haiku 4.5 (efficient for requirements definition)
 
 **Product Manager Agent Model Lock**:
+
 - ✅ **Approved**: Claude Haiku 4.5 (default, clear requirements)
 - 🔒 **Locked**: `gpt-5.4`, `claude-sonnet-4.6`, `claude-opus-4.6` (premium models)
 
@@ -110,17 +111,20 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 ### When to Escalate (RED FLAG 🚩)
 
 **Escalate Feature to Orchestrator if**:
+
 - Feature touches all 3 practices (high complexity)
 - Estimated scope >3 calendar days of development
 - Unknown technical feasibility (ask Developer first)
 - Blocks other high-priority features
 
 **Request Developer Feasibility Study if**:
+
 - Feature is architecturally novel (no similar pattern exists)
 - Requires deep Temporal/Hasura/Apollo knowledge
 - Technical approach is ambiguous
 
 **Escalate to Stoke Space Interview Context if**:
+
 - Feature doesn't align with interview talking points
 - Doesn't demonstrate core Boltline technologies
 - Scope creep diverts from interview prep goals
@@ -128,6 +132,7 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 ### Feature Deferral Criteria
 
 **Defer to Post-Interview if**:
+
 - Low priority features (analytics, admin dashboards, nice-to-haves)
 - Scope creep >20% from original estimate
 - Non-core to demonstrating Boltline architecture
@@ -143,17 +148,18 @@ This is a **practice playground** for a Senior Full Stack Developer interview at
 
 **Product Manager ↔ Copilot CLI Tools**:
 
-| Task | Primary Tool | Secondary Tool | Usage |
-|------|--------------|-----------------|-------|
-| Define feature | `/plan` | `/ask` | Create requirements; clarify with Orchestrator/Developer |
-| Validate approach | `/ask` | N/A | Ask Developer if technical approach is sound |
-| Review implementation | `/diff` | `/review` | Check if acceptance criteria are met |
-| Communicate priorities | `/share` | N/A | Share feature ranking and business value |
-| Escalate scope creep | `/delegate` | `/ask` | Hand off to Orchestrator; request feasibility |
-| Clarify constraints | `/ask` | N/A | Ask Developer about shop-floor reality impact |
-| Document decisions | `/share` | N/A | Share prioritization and deferral decisions |
+| Task                   | Primary Tool | Secondary Tool | Usage                                                    |
+| ---------------------- | ------------ | -------------- | -------------------------------------------------------- |
+| Define feature         | `/plan`      | `/ask`         | Create requirements; clarify with Orchestrator/Developer |
+| Validate approach      | `/ask`       | N/A            | Ask Developer if technical approach is sound             |
+| Review implementation  | `/diff`      | `/review`      | Check if acceptance criteria are met                     |
+| Communicate priorities | `/share`     | N/A            | Share feature ranking and business value                 |
+| Escalate scope creep   | `/delegate`  | `/ask`         | Hand off to Orchestrator; request feasibility            |
+| Clarify constraints    | `/ask`       | N/A            | Ask Developer about shop-floor reality impact            |
+| Document decisions     | `/share`     | N/A            | Share prioritization and deferral decisions              |
 
 **Key Patterns**:
+
 - **Before implementation**: Use `/plan` to create clear, testable acceptance criteria
 - **During implementation**: Use `/ask` to validate progress against requirements
 - **Review phase**: Use `/diff` and `/review` to verify feature meets spec

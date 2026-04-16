@@ -2,7 +2,42 @@
 
 This directory contains role-based agent configurations for the graphql-workflow-playground project. Each agent has a specialized focus and works collaboratively to deliver high-quality code and features.
 
+## 🎯 Quick Reference
+
+**New to this project?** Start here:
+
+- **[Quality Assurance Hooks](./quality-assurance.md)** ← Code QA standards (ESLint, Prettier, pnpm audit)
+- **[Developer Agent](./developer.md)** ← Implementation guide
+- **[Reviewer Agent](./reviewer.md)** ← Code review standards
+- **[Tester Agent](./tester.md)** ← Testing strategy
+- **[Orchestrator Agent](./orchestrator.md)** ← Coordination & planning
+- **[Product Manager Agent](./product-manager.md)** ← Requirements & prioritization
+
 ## Agent Roles
+
+### 🔍 [Quality Assurance](./quality-assurance.md)
+
+**Focus**: Code quality standards, QA tools, security checks
+
+Defines and enforces quality standards using ESLint, Prettier, pnpm audit, and TypeScript type checking. All agents must follow these standards.
+
+**Key Responsibilities**:
+
+- ESLint enforcement (type safety, code quality)
+- Prettier formatting (consistent style)
+- pnpm audit (security vulnerabilities)
+- Pre-commit QA checklist
+
+**Key Commands**:
+
+```bash
+pnpm lint && pnpm lint:fix         # ESLint (check & fix)
+pnpm format:check && pnpm format   # Prettier (check & apply)
+pnpm audit                          # Security audit (from root)
+pnpm type-check                    # TypeScript strict mode
+```
+
+---
 
 ### 🧑‍💻 [Developer](./developer.md)
 
@@ -185,6 +220,7 @@ Orchestrator
     ├── developer.md             # Implementation role
     ├── orchestrator.md          # Coordination role
     ├── product-manager.md       # Requirements role
+    ├── quality-assurance.md     # QA standards & tools ⭐ NEW
     ├── reviewer.md              # Quality role
     ├── tester.md                # Testing role
     └── README.md                # This file
@@ -196,6 +232,7 @@ Orchestrator
 
 All agents reference these core documents:
 
+- **`agents/quality-assurance.md`** ⭐ **NEW**: QA standards (ESLint, Prettier, pnpm audit)
 - **`.github/copilot-instructions.md`**: Build/test commands, architecture overview, conventions
 - **`DESIGN.md`**: Architecture patterns, interview checkpoints, core concepts
 - **`CLAUDE.md`**: Detailed technology stack, framework integration points
@@ -297,22 +334,23 @@ Orchestrator (marks done)
 
 #### Copilot CLI Commands by Agent
 
-| Command | Developer | Orchestrator | Product Manager | Reviewer | Tester |
-|---------|-----------|---|---|---|---|
-| `/plan` | ✅ Design | ✅ Breaking down | ✅ Requirements | ⭕ Review plan | ✅ Test strategy |
-| `/diff` | ✅ Review changes | ⭕ Integration | ⭕ Verify impl | ✅ **PRIMARY** | ⭕ Coverage check |
-| `/review` | ⭕ Auto-review | ⭕ Architecture | ⭕ Feature check | ✅ **PRIMARY** | ✅ Test quality |
-| `/ask` | ✅ Clarify | ✅ **PRIMARY** | ✅ **PRIMARY** | ✅ Questions | ✅ Clarify |
-| `/share` | ⭕ Optional | ✅ Progress | ✅ **PRIMARY** | ✅ Feedback | ✅ Results |
-| `/delegate` | ⭕ Escalate | ✅ **PRIMARY** | ✅ Escalate | ✅ Escalate | ✅ Escalate |
-| `/lsp` | ✅ Debugging | ⭕ N/A | ⭕ N/A | ✅ Code intel | ✅ Test debug |
-| `/tasks` | ⭕ View only | ✅ **PRIMARY** | ⭕ View | ⭕ View only | ⭕ View only |
+| Command     | Developer         | Orchestrator     | Product Manager  | Reviewer       | Tester            |
+| ----------- | ----------------- | ---------------- | ---------------- | -------------- | ----------------- |
+| `/plan`     | ✅ Design         | ✅ Breaking down | ✅ Requirements  | ⭕ Review plan | ✅ Test strategy  |
+| `/diff`     | ✅ Review changes | ⭕ Integration   | ⭕ Verify impl   | ✅ **PRIMARY** | ⭕ Coverage check |
+| `/review`   | ⭕ Auto-review    | ⭕ Architecture  | ⭕ Feature check | ✅ **PRIMARY** | ✅ Test quality   |
+| `/ask`      | ✅ Clarify        | ✅ **PRIMARY**   | ✅ **PRIMARY**   | ✅ Questions   | ✅ Clarify        |
+| `/share`    | ⭕ Optional       | ✅ Progress      | ✅ **PRIMARY**   | ✅ Feedback    | ✅ Results        |
+| `/delegate` | ⭕ Escalate       | ✅ **PRIMARY**   | ✅ Escalate      | ✅ Escalate    | ✅ Escalate       |
+| `/lsp`      | ✅ Debugging      | ⭕ N/A           | ⭕ N/A           | ✅ Code intel  | ✅ Test debug     |
+| `/tasks`    | ⭕ View only      | ✅ **PRIMARY**   | ⭕ View          | ⭕ View only   | ⭕ View only      |
 
 **Legend**: ✅ Primary use | ⭕ Secondary use | (blank) Rarely used
 
 #### Cross-Agent Scenarios
 
 **Scenario 1: New Feature Request**
+
 ```
 1. Product Manager: /plan → Define requirements
 2. Product Manager: /share → Send to Orchestrator
@@ -325,6 +363,7 @@ Orchestrator (marks done)
 ```
 
 **Scenario 2: Cross-Practice Integration Issue**
+
 ```
 1. Tester: /ask → "Why is Practice 2 → Practice 3 failing?"
 2. Developer: /diff → Show root cause
@@ -334,6 +373,7 @@ Orchestrator (marks done)
 ```
 
 **Scenario 3: Blocked by Test Failures**
+
 ```
 1. Tester: /plan → Design test fix
 2. Developer: /ask → "Should I fix implementation or test?"
@@ -345,6 +385,7 @@ Orchestrator (marks done)
 #### Model Override Coordination
 
 Each agent has **locked model** (Haiku by default):
+
 - ✅ Developer uses Haiku only (unless explicitly requested via `/model`)
 - ✅ Orchestrator uses Haiku only (unless explicitly requested)
 - ✅ Product Manager uses Haiku only (unless explicitly requested)
@@ -394,6 +435,7 @@ Each agent has **locked model** (Haiku by default):
 - Point to specific lines/files
 - Suggest alternatives, not just criticism
 - Ask "Why?" to understand developer intent
+- **Verify all QA checks pass before approving** (ESLint, Prettier, audit)
 
 ### Tester
 
@@ -401,6 +443,14 @@ Each agent has **locked model** (Haiku by default):
 - Test integration across practices early
 - Automate tests; don't rely on manual QA
 - Document test gaps for future work
+- **Verify ESLint/Prettier/audit pass as part of test validation**
+
+### Quality Assurance
+
+- Define and enforce QA standards (ESLint, Prettier, pnpm audit)
+- Ensure all agents follow pre-commit checklist
+- Document QA procedures and troubleshooting
+- Maintain QA tool configurations
 
 ---
 
@@ -422,13 +472,14 @@ For complex architectural decisions, escalate to Product Manager or Orchestrator
 
 To use agents in your workflow:
 
+0. **⭐ NEW - For Code Quality**: Refer to [Quality Assurance Guide](./quality-assurance.md) — **ALL agents must follow this**
 1. **For Development**: Refer to [Developer Agent](./developer.md)
 2. **For Planning**: Refer to [Orchestrator Agent](./orchestrator.md)
 3. **For Requirements**: Refer to [Product Manager Agent](./product-manager.md)
 4. **For Code Review**: Refer to [Reviewer Agent](./reviewer.md)
 5. **For Testing**: Refer to [Tester Agent](./tester.md)
 
-Each agent has specific commands, patterns, and examples relevant to their role.
+Each agent has specific commands, patterns, and examples relevant to their role. **All agents enforce QA standards from quality-assurance.md.**
 
 ---
 

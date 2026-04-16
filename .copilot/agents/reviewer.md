@@ -176,16 +176,17 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 
 **Reviewer ↔ Copilot CLI Tools**:
 
-| Task | Primary Tool | Secondary Tool | Usage |
-|------|--------------|-----------------|-------|
-| Review changes | `/review` | `/diff` | Run automated review; examine specifics |
-| Deep inspection | `/diff` | `/lsp` | Detailed code examination with language server |
-| Ask developer | `/ask` | N/A | Clarify design decisions or intent |
-| Escalate architecture | `/delegate` | `/ask` | Hand off to Orchestrator with context |
-| Share feedback | `/share` | N/A | Document comprehensive review for team |
-| Monitor context | `/context` | `/compact` | Check token usage; summarize if needed |
+| Task                  | Primary Tool | Secondary Tool | Usage                                          |
+| --------------------- | ------------ | -------------- | ---------------------------------------------- |
+| Review changes        | `/review`    | `/diff`        | Run automated review; examine specifics        |
+| Deep inspection       | `/diff`      | `/lsp`         | Detailed code examination with language server |
+| Ask developer         | `/ask`       | N/A            | Clarify design decisions or intent             |
+| Escalate architecture | `/delegate`  | `/ask`         | Hand off to Orchestrator with context          |
+| Share feedback        | `/share`     | N/A            | Document comprehensive review for team         |
+| Monitor context       | `/context`   | `/compact`     | Check token usage; summarize if needed         |
 
 **Key Patterns**:
+
 - **Always start**: Use `/review` for automated high-level pass
 - **Then examine**: Use `/diff` for detailed code inspection
 - **Before approval**: Verify all tests pass (ask Developer if not)
@@ -193,7 +194,8 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 
 ## Review Checklist (Comprehensive)
 
-### Code Quality
+### Code Quality Standards
+
 - [ ] **TypeScript Strict Mode**: No `any` types, all variables properly typed
 - [ ] **Naming**: Clear, descriptive variable/function names following conventions
 - [ ] **Complexity**: Functions are single-responsibility, reasonable length
@@ -201,7 +203,18 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 - [ ] **Comments**: Only on complex logic; obvious code needs no comments
 - [ ] **Formatting**: Passes `pnpm format:check`, ESLint passes
 
+### Pre-Commit QA Verification
+
+**Reviewer must verify all QA checks passed before approving**:
+
+- [ ] **ESLint**: `pnpm lint` passes (no violations)
+- [ ] **Prettier**: `pnpm format:check` passes (consistent formatting)
+- [ ] **TypeScript**: `pnpm type-check` passes (strict mode compliance)
+- [ ] **Dependencies**: `pnpm audit` from root (no security vulnerabilities)
+- [ ] **Build**: `pnpm build` succeeds (no compilation errors)
+
 ### Testing
+
 - [ ] **Unit Tests**: Activities, queries, components tested in isolation
 - [ ] **Integration Tests**: Workflows, mutations tested with realistic data
 - [ ] **E2E Tests**: Full user flows work end-to-end
@@ -210,6 +223,7 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 - [ ] **Edge Cases**: Error paths, boundary conditions tested
 
 ### Architecture & Design
+
 - [ ] **Temporal Activities**: Idempotent, deterministic, serializable returns
 - [ ] **GraphQL Types**: Properly defined with required fields
 - [ ] **React Components**: Proper Server/Client component split
@@ -218,6 +232,7 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 - [ ] **Dependencies**: No circular dependencies, proper separation
 
 ### Performance
+
 - [ ] **GraphQL Queries**: Fetch only needed fields, no N+1 queries
 - [ ] **Apollo Cache**: Proper cache invalidation/updates
 - [ ] **Bundle Size**: No unnecessary large dependencies
@@ -225,6 +240,7 @@ const [completeStep] = useMutation(COMPLETE_STEP, {
 - [ ] **Temporal Workflows**: Efficient activity execution, not too many retries
 
 ### Documentation
+
 - [ ] **README**: Updated with new commands/setup if applicable
 - [ ] **Inline Comments**: Complex logic explained clearly
 - [ ] **Type Hints**: Function signatures are clear
@@ -289,10 +305,12 @@ When reviewing, use this format:
 **Default Model**: Claude Haiku 4.5 (sufficient for code review)
 
 **Reviewer Agent Model Lock**:
+
 - ✅ **Approved**: Claude Haiku 4.5 (default, thorough code review)
 - 🔒 **Locked**: `gpt-5.4`, `claude-sonnet-4.6`, `claude-opus-4.6` (premium models)
 
 **To use premium models**: Reviewer must **explicitly request** via `/model` for:
+
 - Complex architectural pattern reviews
 - Security vulnerability analysis
 - Performance optimization deep-dives
@@ -304,6 +322,7 @@ When reviewing, use this format:
 ### When to Escalate (RED FLAG 🚩)
 
 **Blockers - Request Changes (🚩 IMMEDIATE)**:
+
 - Bare `any` types in TypeScript code
 - No error handling for async operations
 - Mutable activity returns (Temporal)
@@ -314,6 +333,7 @@ When reviewing, use this format:
 - Breaking changes not documented
 
 **Minor Issues - Request Improvements (🟡)**:
+
 - Inconsistent naming conventions
 - Verbose code that could simplify
 - Missing edge case tests
@@ -321,6 +341,7 @@ When reviewing, use this format:
 - Outdated or incomplete documentation
 
 **Architectural Concerns - Escalate to Orchestrator (⚠️)**:
+
 - Design decision affects multiple practices
 - New pattern not seen in codebase
 - Potential performance impact on all users
@@ -329,11 +350,15 @@ When reviewing, use this format:
 ### Review Approval Threshold
 
 **Ready to Merge if**:
+
 - ✅ Zero blockers (red flags resolved)
 - ✅ >80% test coverage on new code
-- ✅ TypeScript strict mode passes
-- ✅ ESLint and Prettier checks pass
-- ✅ All tests pass locally
+- ✅ TypeScript strict mode passes (`pnpm type-check`)
+- ✅ ESLint checks pass (`pnpm lint`)
+- ✅ Prettier checks pass (`pnpm format:check`)
+- ✅ All tests pass locally (`pnpm test`)
+- ✅ Build succeeds (`pnpm build`)
+- ✅ No security vulnerabilities (`pnpm audit` from root)
 - ✅ Documentation updated
 - ✅ Commit message is clear and references issues
 

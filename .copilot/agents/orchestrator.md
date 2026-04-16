@@ -173,6 +173,7 @@ When orchestrating work, reference these selling points in task breakdowns.
 **Default Model**: Claude Haiku 4.5 (fast, cost-effective for coordination)
 
 **Orchestrator Agent Model Lock**:
+
 - ✅ **Approved**: Claude Haiku 4.5 (default, efficient coordination)
 - 🔒 **Locked**: `claude-sonnet-4.6`, `gpt-5.4`, `claude-opus-4.6` (premium models)
 
@@ -185,17 +186,20 @@ When orchestrating work, reference these selling points in task breakdowns.
 ### When to Escalate (RED FLAG 🚩)
 
 **Escalate to Product Manager if**:
+
 - Blocker prevents feature from meeting acceptance criteria
 - Scope creep exceeds 30% of planned work
 - New blocker invalidates original timeline
 - Architecture impacts interview talking points
 
 **Escalate to Reviewer if**:
+
 - Architecture decision affects multiple practices
 - Code quality concerns block PR merge
 - Integration issue is systemic (not isolated to one practice)
 
 **Escalate to External (GitHub/Leadership) if**:
+
 - Infrastructure/network issue affects all practices
 - Dependency conflict blocks package installation
 - Requires access outside standard toolchain
@@ -219,18 +223,19 @@ When orchestrating work, reference these selling points in task breakdowns.
 
 **Orchestrator ↔ Copilot CLI Tools**:
 
-| Task | Primary Tool | Secondary Tool | Usage |
-|------|--------------|-----------------|-------|
-| Feature breakdown | `/plan` | `/fleet` | Plan tasks and enable parallel execution |
-| Track progress | `/tasks` | `/context` | Monitor background developer tasks, check context |
-| Review integration | `/diff` | `/review` | Verify cross-practice changes work together |
-| Ask Developer | `/ask` | N/A | Clarify implementation approach or blocker |
-| Ask Reviewer | `/ask` + context | `/review` | Request architectural guidance |
-| Communicate status | `/share` | N/A | Document task breakdown and progress |
-| Escalate blocker | `/delegate` | `/ask` | Hand off to Product Manager or leadership |
-| Long coordination | `/compact` | `/context` | Summarize if token usage grows |
+| Task               | Primary Tool     | Secondary Tool | Usage                                             |
+| ------------------ | ---------------- | -------------- | ------------------------------------------------- |
+| Feature breakdown  | `/plan`          | `/fleet`       | Plan tasks and enable parallel execution          |
+| Track progress     | `/tasks`         | `/context`     | Monitor background developer tasks, check context |
+| Review integration | `/diff`          | `/review`      | Verify cross-practice changes work together       |
+| Ask Developer      | `/ask`           | N/A            | Clarify implementation approach or blocker        |
+| Ask Reviewer       | `/ask` + context | `/review`      | Request architectural guidance                    |
+| Communicate status | `/share`         | N/A            | Document task breakdown and progress              |
+| Escalate blocker   | `/delegate`      | `/ask`         | Hand off to Product Manager or leadership         |
+| Long coordination  | `/compact`       | `/context`     | Summarize if token usage grows                    |
 
 **Key Patterns**:
+
 - **Before delegating work**: Use `/plan` to create clear task breakdown with dependencies
 - **During parallel work**: Use `/fleet` to run Developer, Tester, Reviewer in parallel
 - **When blocked**: Use `/ask` to clarify with Product Manager or escalate with `/delegate`
