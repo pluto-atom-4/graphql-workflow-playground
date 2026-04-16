@@ -366,46 +366,86 @@ pnpm audit
 The GitHub Actions workflow automatically runs QA checks on every PR:
 
 ```yaml
-# .github/workflows/ci.yml structure
+# .github/workflows/ci.yml - Actual structure
 jobs:
-  lint:
+  lint-format:
+    name: 📝 Lint & Format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: pnpm lint
-
-  format:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
       - run: pnpm format:check
 
   type-check:
+    name: 🔍 Type Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: pnpm type-check
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: pnpm test
-
   build:
+    name: 🔨 Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: pnpm build
 
-  audit:
+  test:
+    name: ✅ Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: pnpm audit
+      - uses: actions/checkout@v4
+      - run: pnpm test
+
+  practice-1-temporal:
+    name: 🚀 Practice 1 (Temporal & Kafka)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pnpm --filter @boltline/practice-temporal test
+
+  practice-3-nextjs:
+    name: 🚀 Practice 3 (Next.js & GraphQL)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pnpm --filter @boltline/practice-nextjs-graphql test
+
+  security-checks:
+    name: 📦 Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm audit --prod # Scans production dependencies only
+
+  all-checks-pass:
+    name: All Checks Pass
+    runs-on: ubuntu-latest
+    needs:
+      [
+        lint-format,
+        type-check,
+        build,
+        test,
+        practice-1-temporal,
+        practice-3-nextjs,
+        security-checks,
+      ]
+    if: always()
+    steps:
+      - name: Verify all checks passed
+        run: |
+          # Exit with error if any required job failed
+          exit 1 if any dependency failed
 ```
 
-**PR cannot merge until all CI checks pass.**
+**Key points:**
+
+- **Lint & Format combined**: Both run in the same job for efficiency
+- **Security on all events**: `security-checks` runs on all pushes and PRs (not PR-only)
+- **--prod flag**: Scans only production dependencies (excludes dev/peer dependencies) for a faster, focused audit
+- **All-checks-pass gate**: Blocks merge until ALL 7 jobs succeed
 
 ---
 
